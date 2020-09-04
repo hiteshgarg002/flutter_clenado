@@ -122,20 +122,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSocialSigninButtonWidget(SocialSigninType type) {
     Color bgColor;
-    String title;
+    String title, iconPath = "assets/images/";
 
     switch (type) {
       case SocialSigninType.FB:
         bgColor = Pigment.fromString(CustomColors.blue1);
         title = "Facebook";
+        iconPath += "facebook.webp";
         break;
       case SocialSigninType.GOOGLE:
         bgColor = Pigment.fromString(CustomColors.red3);
         title = "Google";
+        iconPath += "google.webp";
         break;
       case SocialSigninType.APPLE:
         bgColor = Colors.black;
         title = "Apple";
+        iconPath += "apple.webp";
         break;
     }
 
@@ -146,17 +149,33 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
-        padding: EdgeInsets.symmetric(vertical: _height * 0.02),
+        padding: EdgeInsets.symmetric(vertical: _height * 0.01),
         height: 0,
         minWidth: double.infinity,
         color: bgColor,
-        child: Text(
-          "Sign in with $title",
-          style: GoogleFonts.inter(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: _width * 0.037,
-          ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: _width * 0.02),
+                child: Image.asset(
+                  iconPath,
+                  height: _width * 0.08,
+                  width: _width * 0.08,
+                ),
+              ),
+            ),
+            Text(
+              "Sign in with $title",
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: _width * 0.037,
+              ),
+            ),
+          ],
         ),
         onPressed: () async {
           FocusScopeNode currentFocus = FocusScope.of(context);

@@ -4,12 +4,12 @@ import 'package:flutter_clenado/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 
-class ReservationsScreen extends StatefulWidget {
+class HistoryScreen extends StatefulWidget {
   @override
-  _ReservationsScreenState createState() => _ReservationsScreenState();
+  _HistoryScreenState createState() => _HistoryScreenState();
 }
 
-class _ReservationsScreenState extends State<ReservationsScreen> {
+class _HistoryScreenState extends State<HistoryScreen> {
   double _height, _width;
 
   @override
@@ -55,7 +55,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Reservations",
+                    "History",
                     style: GoogleFonts.inter(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -106,11 +106,11 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         vertical: _height * 0.002,
                       ),
                       decoration: BoxDecoration(
-                        color: Pigment.fromString(CustomColors.green1),
+                   color: Pigment.fromString(CustomColors.red1),
                         borderRadius: BorderRadius.circular(_width),
                       ),
                       child: Text(
-                        "Active",
+                        "Inactive",
                         style: GoogleFonts.inter(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -145,7 +145,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         horizontal: _width * 0.05,
                         vertical: _height * 0.01,
                       ),
-                      color: Pigment.fromString(CustomColors.red1),
+                      color: Pigment.fromString(CustomColors.grey12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(_width),
                       ),
@@ -153,7 +153,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                       child: Text(
                         "navigate",
                         style: GoogleFonts.inter(
-                          color: Colors.white,
+                          color: Pigment.fromString(CustomColors.grey11),
                           fontWeight: FontWeight.w600,
                           fontSize: _width * 0.04,
                         ),

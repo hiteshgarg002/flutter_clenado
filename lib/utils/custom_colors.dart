@@ -4,6 +4,8 @@ class CustomColors {
   static const String red1 = "#E00000";
   static const String red2 = "#D60000";
   static const String red3 = "#DC4E41";
+  static const String red4 = "#EB0000";
+  static const String red5 = "#C70000";
 
   static const String grey1 = "#F5F5F5";
   static const String grey2 = "#6B6B6B";
@@ -16,6 +18,8 @@ class CustomColors {
   static const String grey9 = "#C9C9C9";
   static const String grey10 = "#878787";
   static const String grey11 = "#858585";
+  static const String grey12 = "#EDEDED";
+  static const String grey13 = "#F2F2F2";
 
   static const String green1 = "#04EB00";
 

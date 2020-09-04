@@ -1,8 +1,11 @@
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_clenado/blocs/drawer_bloc.dart';
 import 'package:flutter_clenado/routes/routes.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pigment/pigment.dart';
@@ -17,11 +20,132 @@ class _DrawerScreenState extends State<DrawerScreen> {
   GoogleMapController _mapController;
 
   final GlobalKey<ScaffoldState> _sfKey = GlobalKey();
+  Set<Marker> _markersList;
+
+  BitmapDescriptor _bitmapDescriptor;
+
+  DrawerBloc _bloc;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _bloc = BlocProvider.of<DrawerBloc>(context);
+
+    _markersList = Set();
+
+    Future.delayed(
+      Duration(seconds: 2),
+      () => _bloc.setLoading = false,
+    );
+  }
+
+  Future<BitmapDescriptor> _getMarkerIcon() async {
+    _bitmapDescriptor = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(),
+      "assets/images/marker.webp",
+    );
+  }
+
+  void _showAppSettingsDialog() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.symmetric(
+            vertical: _height * 0.02,
+            horizontal: _width * 0.1,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(_width * 0.03),
+              topLeft: Radius.circular(_width * 0.03),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Please enable location permission and try again!",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: _width * 0.04,
+                ),
+              ),
+              SizedBox(
+                height: _height * 0.02,
+              ),
+              FlatButton(
+                color: Colors.black,
+                splashColor: Colors.white.withOpacity(0.4),
+                child: Text(
+                  "Go to App Settings",
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: _width * 0.038,
+                  ),
+                ),
+                onPressed: () async {
+                  await Future.delayed(Duration(milliseconds: 100));
+
+                  openAppSettings();
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<bool> _isPermissionGranted() async {
+    LocationPermission permission = await checkPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      // show dialog for navigating to app settings
+      _showAppSettingsDialog();
+
+      return false;
+    }
+
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      return true;
+    }
+
+    LocationPermission requestedPermission = await requestPermission();
+
+    if (requestedPermission == LocationPermission.denied ||
+        requestedPermission == LocationPermission.deniedForever) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<Position> _getCurrentLocation() async {
+    try {
+      bool isPermissionGranted = await _isPermissionGranted();
+
+      if (!isPermissionGranted) {
+        return null;
+      }
+
+      Position position = await getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+      );
+
+      return position;
+    } catch (err) {
+      print("Error :: _getCurrentLocation :: ${err.toString()}");
+      return null;
+    }
   }
 
   Widget get _buildAppbarWidget => PreferredSize(
@@ -70,7 +194,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   ),
                   onPressed: () async {
                     await Future.delayed(Duration(milliseconds: 150));
-                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -115,6 +238,18 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
               case 1:
                 Routes.reservationsScreen(context);
+                break;
+
+              case 3:
+                Routes.historyScreen(context);
+                break;
+
+              case 4:
+                Routes.walletScreen(context);
+                break;
+
+              case 5:
+                Routes.rewardsPointsScreen(context);
                 break;
             }
           },
@@ -239,6 +374,80 @@ class _DrawerScreenState extends State<DrawerScreen> {
         ),
       );
 
+  Widget get _buildMyLocationButtonWidget => MaterialButton(
+        elevation: 5,
+        height: 0,
+        minWidth: 0,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: CircleBorder(),
+        padding: EdgeInsets.all(_width * 0.015),
+        color: Colors.white,
+        child: Icon(
+          Icons.my_location,
+          size: _width * 0.07,
+        ),
+        onPressed: () async {
+          Position position = await _getCurrentLocation();
+
+          if (position != null) {
+            _mapController.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: LatLng(position.latitude, position.longitude),
+                  zoom: 15.0,
+                ),
+              ),
+            );
+          }
+        },
+      );
+
+  Widget get _buildReserveButtonWidget => MaterialButton(
+        elevation: 5,
+        height: 0,
+        minWidth: 0,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(_width),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: _width * 0.08,
+          vertical: _height * 0.02,
+        ),
+        color: Pigment.fromString(CustomColors.red1),
+        child: Text(
+          "Reserve Now",
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            fontSize: _width * 0.035,
+          ),
+        ),
+        onPressed: () async {
+          Position position = await _getCurrentLocation();
+
+          if (position != null) {
+            _mapController.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: LatLng(position.latitude, position.longitude),
+                  zoom: 15.0,
+                ),
+              ),
+            );
+          }
+        },
+      );
+
+  Widget get _buildCircularProgressWidget => Center(
+        child: CircularProgressIndicator(
+          strokeWidth: _width * 0.008,
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Colors.black,
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
@@ -246,7 +455,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
+        statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarDividerColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
@@ -256,23 +465,61 @@ class _DrawerScreenState extends State<DrawerScreen> {
       child: Scaffold(
         key: _sfKey,
         backgroundColor: Colors.white,
-        appBar: _buildAppbarWidget,
-        body: GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: LatLng(0, 0),
-          ),
-          buildingsEnabled: true,
-          compassEnabled: true,
-          zoomGesturesEnabled: true,
-          rotateGesturesEnabled: true,
-          scrollGesturesEnabled: true,
-          tiltGesturesEnabled: true,
-          myLocationEnabled: true,
-          onMapCreated: (controller) {
-            this._mapController = controller;
-          },
-          padding: EdgeInsets.zero,
-        ),
+        body: StreamBuilder<bool>(
+            initialData: true,
+            stream: _bloc.getLoading,
+            builder: (context, snapshot) {
+              return snapshot.data
+                  ? _buildCircularProgressWidget
+                  : Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(0, 0),
+                          ),
+                          markers: _markersList,
+                          buildingsEnabled: true,
+                          compassEnabled: true,
+                          zoomGesturesEnabled: true,
+                          rotateGesturesEnabled: true,
+                          scrollGesturesEnabled: true,
+                          tiltGesturesEnabled: true,
+                          myLocationEnabled: false,
+                          zoomControlsEnabled: false,
+                          onMapCreated: (controller) {
+                            this._mapController = controller;
+                          },
+                          padding: EdgeInsets.zero,
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: _buildAppbarWidget,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                              bottom: _height * 0.03,
+                              right: _width * 0.05,
+                              left: _width * 0.05,
+                            ),
+                            width: double.infinity,
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: <Widget>[
+                                _buildReserveButtonWidget,
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: _buildMyLocationButtonWidget,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+            }),
         drawer: Container(
           width: double.infinity,
           height: double.infinity,

@@ -1,11 +1,19 @@
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
+import 'package:flutter_clenado/blocs/drawer_bloc.dart';
+import 'package:flutter_clenado/blocs/reservations_bloc.dart';
+import 'package:flutter_clenado/blocs/history_bloc.dart';
+import 'package:flutter_clenado/blocs/rewards_points_bloc.dart';
+import 'package:flutter_clenado/blocs/wallet_bloc.dart';
 import 'package:flutter_clenado/screens/auth/login_screen.dart';
 import 'package:flutter_clenado/screens/auth/signup_screen.dart';
 import 'package:flutter_clenado/screens/drawer/account_screen.dart';
 import 'package:flutter_clenado/screens/drawer/drawer_screen.dart';
 import 'package:flutter_clenado/screens/drawer/reservations_screen.dart';
+import 'package:flutter_clenado/screens/drawer/history_screen.dart';
+import 'package:flutter_clenado/screens/drawer/rewards_points_screen.dart';
+import 'package:flutter_clenado/screens/drawer/wallet_screen.dart';
 import 'animated_page_route.dart';
 
 class Routes {
@@ -13,7 +21,10 @@ class Routes {
     Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return DrawerScreen();
+        return BlocProvider(
+          creator: (c, b) => DrawerBloc(),
+          child: DrawerScreen(),
+        );
       }),
       (route) => false,
     );
@@ -44,42 +55,6 @@ class Routes {
     );
   }
 
-  // static void signupScreen(BuildContext context) {
-  //   Navigator.push(
-  //     context,
-  //     CupertinoPageRoute(builder: (BuildContext context) {
-  //       return BlocProvider(
-  //         creator: (c, b) => AuthBloc(),
-  //         child: SignupScreen(),
-  //       );
-  //     }),
-  //   );
-  // }
-
-  // static void forgotPasswordScreen(BuildContext context) {
-  //   Navigator.push(
-  //     context,
-  //     CupertinoPageRoute(builder: (BuildContext context) {
-  //       return BlocProvider(
-  //         creator: (c, b) => AuthBloc(),
-  //         child: ForgotPasswordScreen(),
-  //       );
-  //     }),
-  //   );
-  // }
-
-  // static void verifyOtpScreen(BuildContext context, String email) {
-  //   Navigator.push(
-  //     context,
-  //     CupertinoPageRoute(builder: (BuildContext context) {
-  //       return BlocProvider(
-  //         creator: (c, b) => AuthBloc(),
-  //         child: VerifyOTPScreen(email),
-  //       );
-  //     }),
-  //   );
-  // }
-
   static void accountScreen(BuildContext context) {
     Navigator.push(
       context,
@@ -93,7 +68,46 @@ class Routes {
     Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return ReservationsScreen();
+        return BlocProvider(
+          creator: (c, b) => ReservationsBloc(),
+          child: ReservationsScreen(),
+        );
+      }),
+    );
+  }
+
+  static void historyScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        return BlocProvider(
+          creator: (c, b) => HistoryBloc(),
+          child: HistoryScreen(),
+        );
+      }),
+    );
+  }
+
+   static void rewardsPointsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        return BlocProvider(
+          creator: (c, b) => RewardsPointsBloc(),
+          child: RewardsPointsScreen(),
+        );
+      }),
+    );
+  }
+
+  static void walletScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        return BlocProvider(
+          creator: (c, b) => WalletBloc(),
+          child: WalletScreen(),
+        );
       }),
     );
   }
