@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
 import 'package:flutter_clenado/screens/auth/login_screen.dart';
+import 'package:flutter_clenado/screens/invite_screen.dart';
+
+import 'screens/code_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

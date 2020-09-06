@@ -2,18 +2,22 @@ import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
 import 'package:flutter_clenado/blocs/drawer_bloc.dart';
+import 'package:flutter_clenado/blocs/promotions_bloc.dart';
 import 'package:flutter_clenado/blocs/reservations_bloc.dart';
 import 'package:flutter_clenado/blocs/history_bloc.dart';
 import 'package:flutter_clenado/blocs/rewards_points_bloc.dart';
 import 'package:flutter_clenado/blocs/wallet_bloc.dart';
 import 'package:flutter_clenado/screens/auth/login_screen.dart';
 import 'package:flutter_clenado/screens/auth/signup_screen.dart';
+import 'package:flutter_clenado/screens/code_screen.dart';
 import 'package:flutter_clenado/screens/drawer/account_screen.dart';
 import 'package:flutter_clenado/screens/drawer/drawer_screen.dart';
+import 'package:flutter_clenado/screens/drawer/promotions/promotions_tabs_screen.dart';
 import 'package:flutter_clenado/screens/drawer/reservations_screen.dart';
 import 'package:flutter_clenado/screens/drawer/history_screen.dart';
 import 'package:flutter_clenado/screens/drawer/rewards_points_screen.dart';
 import 'package:flutter_clenado/screens/drawer/wallet_screen.dart';
+import 'package:flutter_clenado/screens/invite_screen.dart';
 import 'animated_page_route.dart';
 
 class Routes {
@@ -88,7 +92,7 @@ class Routes {
     );
   }
 
-   static void rewardsPointsScreen(BuildContext context) {
+  static void rewardsPointsScreen(BuildContext context) {
     Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
@@ -109,6 +113,36 @@ class Routes {
           child: WalletScreen(),
         );
       }),
+    );
+  }
+
+  static void promotionsTabsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        return BlocProvider(
+          creator: (c, b) => PromotionsBloc(),
+          child: PromotionsTabsScreen(),
+        );
+      }),
+    );
+  }
+
+  static void inviteScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      AnimatedPageRoute.sharedAxisPageRoute(
+        () => InviteScreen(),
+      ),
+    );
+  }
+
+  static void codeScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      AnimatedPageRoute.sharedAxisPageRoute(
+        () => CodeScreen(),
+      ),
     );
   }
 }

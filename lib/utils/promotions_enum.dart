@@ -1,0 +1,4 @@
+enum Promotions {
+  CURRENT,
+  PAST,
+}
