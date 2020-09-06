@@ -18,6 +18,7 @@ import 'package:flutter_clenado/screens/drawer/history_screen.dart';
 import 'package:flutter_clenado/screens/drawer/rewards_points_screen.dart';
 import 'package:flutter_clenado/screens/drawer/wallet_screen.dart';
 import 'package:flutter_clenado/screens/invite_screen.dart';
+import 'package:flutter_clenado/screens/drawer/help_screen.dart';
 import 'animated_page_route.dart';
 
 class Routes {
@@ -124,6 +125,15 @@ class Routes {
           creator: (c, b) => PromotionsBloc(),
           child: PromotionsTabsScreen(),
         );
+      }),
+    );
+  }
+
+  static void helpScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        return HelpScreen();
       }),
     );
   }

@@ -12,7 +12,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pigment/pigment.dart';
-import 'package:some_calendar/some_calendar.dart';
 
 class DrawerScreen extends StatefulWidget {
   @override
@@ -296,6 +295,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
               case 5:
                 Routes.rewardsPointsScreen(context);
                 break;
+
+              case 6:
+                Routes.helpScreen(context);
+                break;
             }
           },
         ),
@@ -525,11 +528,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
         onPressed: () async {
           await Future.delayed(Duration(milliseconds: 150));
 
-          // if (!onSheet) {
-          //   _showPodsNearYouSheet();
-          // }
-
-          _showReservationDetailsSheet();
+          if (!onSheet) {
+            _showPodsNearYouSheet();
+          } else {
+            Navigator.pop(context);
+            await Future.delayed(Duration(milliseconds: 300));
+            Routes.codeScreen(context);
+          }
         },
       );
 
@@ -969,7 +974,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               opacity: snapshot.data ? 1.0 : 0.0,
               child: GoogleMap(
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(0, 0),
+                  target: LatLng(22.7533, 75.8937),
                 ),
                 markers: _markersList,
                 buildingsEnabled: true,
