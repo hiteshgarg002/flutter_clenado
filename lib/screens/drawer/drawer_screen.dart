@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/drawer_bloc.dart';
 import 'package:flutter_clenado/routes/routes.dart';
-import 'package:flutter_clenado/utils/calendar/table_calendar.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pigment/pigment.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DrawerScreen extends StatefulWidget {
   @override
@@ -27,7 +26,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   BitmapDescriptor _bitmapDescriptor;
 
-  CalendarController _calendarController;
+  DateRangePickerController _calendarController;
   PageController _pageController;
 
   DrawerBloc _bloc;
@@ -37,7 +36,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
     super.initState();
 
     _bloc = BlocProvider.of<DrawerBloc>(context);
-    _calendarController = CalendarController();
+    _calendarController = DateRangePickerController();
 
     _pageController = PageController(
       initialPage: 0,
@@ -531,98 +530,135 @@ class _DrawerScreenState extends State<DrawerScreen> {
           if (!onSheet) {
             _showPodsNearYouSheet();
           } else {
-            Navigator.pop(context);
-            await Future.delayed(Duration(milliseconds: 300));
-            Routes.codeScreen(context);
+            print(_calendarController.selectedDates);
+            // Navigator.pop(context);
+            // await Future.delayed(Duration(milliseconds: 300));
+            // Routes.codeScreen(context);
           }
         },
       );
 
-  Widget get _buildCalendarWidget => TableCalendar(
-        calendarController: _calendarController,
-        initialCalendarFormat: CalendarFormat.month,
-        availableGestures: AvailableGestures.none,
-        availableCalendarFormats: {CalendarFormat.month: 'Month'},
-        rowHeight: _height * 0.045,
-        startDay: DateTime.now(),
-        initialSelectedDay: DateTime.now(),
-        onDaySelected: (dateTime, list) {
-          print(dateTime.toString());
-        },
-        calendarStyle: CalendarStyle(
-          contentPadding: EdgeInsets.zero,
-          highlightToday: false,
-          highlightSelected: false,
-          outsideDaysVisible: false,
-          weekdayStyle: GoogleFonts.inter(
-            color: Pigment.fromString(CustomColors.grey8),
-            fontWeight: FontWeight.w800,
-            fontSize: _width * 0.038,
-          ),
-          weekendStyle: GoogleFonts.inter(
-            color: Pigment.fromString(CustomColors.grey8),
-            fontWeight: FontWeight.w800,
-            fontSize: _width * 0.038,
-          ),
-          holidayStyle: GoogleFonts.inter(
-            color: Pigment.fromString(CustomColors.grey8),
-            fontWeight: FontWeight.w800,
-            fontSize: _width * 0.038,
-          ),
-        ),
-        daysOfWeekStyle: DaysOfWeekStyle(
-          dowTextBuilder: (dateTime, _) {
-            return DateFormat('E').format(dateTime)[0];
-          },
-          weekdayStyle: GoogleFonts.inter(
+  Widget get _buildCalendarWidget => Container(
+        child: SfDateRangePicker(
+          controller: _calendarController,
+          selectionMode: DateRangePickerSelectionMode.multiple,
+          minDate: DateTime.now(),
+          showNavigationArrow: true,
+          selectionColor: Pigment.fromString(CustomColors.red4),
+          selectionTextStyle: GoogleFonts.inter(
             color: Colors.black,
             fontWeight: FontWeight.w800,
             fontSize: _width * 0.038,
           ),
-          weekendStyle: GoogleFonts.inter(
-            color: Colors.black,
-            fontWeight: FontWeight.w800,
-            fontSize: _width * 0.038,
+          headerStyle: DateRangePickerHeaderStyle(
+            textStyle: GoogleFonts.inter(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: _width * 0.038,
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        headerStyle: HeaderStyle(
-          formatButtonVisible: false,
-          formatButtonShowsNext: false,
-          centerHeaderTitle: true,
-          formatButtonPadding: EdgeInsets.zero,
-          headerPadding: EdgeInsets.zero,
-          leftChevronMargin: EdgeInsets.zero,
-          rightChevronMargin: EdgeInsets.zero,
-          leftChevronPadding: EdgeInsets.zero,
-          rightChevronPadding: EdgeInsets.zero,
-          headerMargin: EdgeInsets.only(bottom: _height * 0.03),
-          titleTextStyle: GoogleFonts.inter(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: _width * 0.038,
+          monthCellStyle: DateRangePickerMonthCellStyle(
+            textStyle: GoogleFonts.inter(
+              color: Pigment.fromString(CustomColors.grey8),
+              fontWeight: FontWeight.w800,
+              fontSize: _width * 0.038,
+            ),
+            todayTextStyle: GoogleFonts.inter(
+              color: Pigment.fromString(CustomColors.grey8),
+              fontWeight: FontWeight.w800,
+              fontSize: _width * 0.038,
+            ),
+            todayCellDecoration: BoxDecoration(),
           ),
-        ),
-        builders: CalendarBuilders(
-          selectedDayBuilder: (context, dateTime, list) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Pigment.fromString(CustomColors.red4),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                dateTime.day.toString(),
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w800,
-                  fontSize: _width * 0.038,
-                ),
-              ),
-            );
-          },
         ),
       );
+
+  // Widget get _buildCalendarWidget => TableCalendar(
+  //       calendarController: _calendarController,
+  //       initialCalendarFormat: CalendarFormat.month,
+  //       availableGestures: AvailableGestures.none,
+  //       availableCalendarFormats: {CalendarFormat.month: 'Month'},
+  //       rowHeight: _height * 0.045,
+  //       startDay: DateTime.now(),
+  //       initialSelectedDay: DateTime.now(),
+  //       onDaySelected: (dateTime, list) {
+  //         print(dateTime.toString());
+  //       },
+  //       calendarStyle: CalendarStyle(
+  //         contentPadding: EdgeInsets.zero,
+  //         highlightToday: false,
+  //         highlightSelected: false,
+  //         outsideDaysVisible: false,
+  //         weekdayStyle: GoogleFonts.inter(
+  //           color: Pigment.fromString(CustomColors.grey8),
+  //           fontWeight: FontWeight.w800,
+  //           fontSize: _width * 0.038,
+  //         ),
+  //         weekendStyle: GoogleFonts.inter(
+  //           color: Pigment.fromString(CustomColors.grey8),
+  //           fontWeight: FontWeight.w800,
+  //           fontSize: _width * 0.038,
+  //         ),
+  //         holidayStyle: GoogleFonts.inter(
+  //           color: Pigment.fromString(CustomColors.grey8),
+  //           fontWeight: FontWeight.w800,
+  //           fontSize: _width * 0.038,
+  //         ),
+  //       ),
+  //       daysOfWeekStyle: DaysOfWeekStyle(
+  //         dowTextBuilder: (dateTime, _) {
+  //           return DateFormat('E').format(dateTime)[0];
+  //         },
+  //         weekdayStyle: GoogleFonts.inter(
+  //           color: Colors.black,
+  //           fontWeight: FontWeight.w800,
+  //           fontSize: _width * 0.038,
+  //         ),
+  //         weekendStyle: GoogleFonts.inter(
+  //           color: Colors.black,
+  //           fontWeight: FontWeight.w800,
+  //           fontSize: _width * 0.038,
+  //         ),
+  //       ),
+  //       headerStyle: HeaderStyle(
+  //         formatButtonVisible: false,
+  //         formatButtonShowsNext: false,
+  //         centerHeaderTitle: true,
+  //         formatButtonPadding: EdgeInsets.zero,
+  //         headerPadding: EdgeInsets.zero,
+  //         leftChevronMargin: EdgeInsets.zero,
+  //         rightChevronMargin: EdgeInsets.zero,
+  //         leftChevronPadding: EdgeInsets.zero,
+  //         rightChevronPadding: EdgeInsets.zero,
+  //         headerMargin: EdgeInsets.only(bottom: _height * 0.03),
+  //         titleTextStyle: GoogleFonts.inter(
+  //           color: Colors.black,
+  //           fontWeight: FontWeight.bold,
+  //           fontSize: _width * 0.038,
+  //         ),
+  //       ),
+  //       builders: CalendarBuilders(
+  //         selectedDayBuilder: (context, dateTime, list) {
+  //           return Container(
+  //             decoration: BoxDecoration(
+  //               color: Pigment.fromString(CustomColors.red4),
+  //               shape: BoxShape.circle,
+  //             ),
+  //             alignment: Alignment.center,
+  //             child: Text(
+  //               dateTime.day.toString(),
+  //               textAlign: TextAlign.center,
+  //               style: GoogleFonts.inter(
+  //                 color: Colors.black,
+  //                 fontWeight: FontWeight.w800,
+  //                 fontSize: _width * 0.038,
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     );
 
   Future<void> _showReservationDetailsSheet() async {
     return await showMaterialModalBottomSheet(
@@ -1093,7 +1129,3 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
 // Draw routes between two coordinates
 // https://blog.codemagic.io/creating-a-route-calculator-using-google-maps/
-
-//
-// http://www.perchmobility.com/
-// https://www.charge.us/

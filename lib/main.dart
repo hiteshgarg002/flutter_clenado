@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
 import 'package:flutter_clenado/screens/auth/login_screen.dart';
-import 'package:flutter_clenado/screens/invite_screen.dart';
-
-import 'screens/code_screen.dart';
+import 'package:syncfusion_flutter_core/core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Register Syncfusion license
+  SyncfusionLicense.registerLicense(
+      "NT8mJyc2IWhia31hfWN9Z2doYmF8YGJ8ampqanNiYmlmamlmanMDHmg7Oic2IDs0MiE0Y2ETND4yOj99MDw+");
 
   // setting app orientation to portrait
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

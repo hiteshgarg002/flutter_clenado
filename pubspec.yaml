@@ -42,8 +42,8 @@ dependencies:
   percent_indicator: ^2.1.5
   modal_bottom_sheet: ^0.2.0+1
   simple_gesture_detector: ^0.1.4
-  some_calendar: ^1.2.6
   flutter_animation_progress_bar: ^1.0.5
+  syncfusion_flutter_datepicker: ^18.2.56-beta
 
 dev_dependencies:
   flutter_test:
