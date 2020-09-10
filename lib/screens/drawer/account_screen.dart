@@ -228,7 +228,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   horizontal: _width * 0.085,
                   vertical: _height * 0.02,
                 ),
-                color: Colors.black,
+                color: Pigment.fromString(CustomColors.black1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(_width),
                 ),

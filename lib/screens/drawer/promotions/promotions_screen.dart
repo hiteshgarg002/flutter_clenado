@@ -43,8 +43,8 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
           margin: EdgeInsets.only(top: _height * 0.03),
           child: widget.promotionType == Promotions.CURRENT
               ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: _width * 0.035),
-                child: Text(
+                  padding: EdgeInsets.symmetric(horizontal: _width * 0.035),
+                  child: Text(
                     "There are no promotions available for you right now. We'll notify you when one comes up.",
                     textAlign: TextAlign.start,
                     style: GoogleFonts.inter(
@@ -53,10 +53,10 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                       fontSize: _width * 0.036,
                     ),
                   ),
-              )
+                )
               : ListView.builder(
                   padding: EdgeInsets.symmetric(horizontal: _width * 0.035),
-                  itemCount: 10,
+                  itemCount: 5,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       padding: EdgeInsets.all(_width * 0.04),

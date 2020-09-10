@@ -142,7 +142,7 @@ class _InviteScreenState extends State<InviteScreen> {
               padding: EdgeInsets.symmetric(
                 vertical: _height * 0.022,
               ),
-              color: Colors.black,
+              color: Pigment.fromString(CustomColors.black1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(_width),
               ),

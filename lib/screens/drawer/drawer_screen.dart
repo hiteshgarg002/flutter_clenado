@@ -1,16 +1,21 @@
+import 'dart:ui';
+
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/drawer_bloc.dart';
 import 'package:flutter_clenado/routes/routes.dart';
+import 'package:flutter_clenado/utils/constants.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:intl/intl.dart';
 import 'package:pigment/pigment.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class DrawerScreen extends StatefulWidget {
   @override
@@ -26,8 +31,23 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   BitmapDescriptor _bitmapDescriptor;
 
-  DateRangePickerController _calendarController;
   PageController _pageController;
+  final PanelController _panelController = PanelController();
+  final ScrollController _scrollController = ScrollController();
+
+  String _mapStyle;
+
+  //  Object for PolylinePoints
+  PolylinePoints _polylinePoints;
+
+  // List of coordinates to join
+  List<LatLng> _polylineCoordinates = [];
+
+  // Map storing polylines created by connecting two points
+  Map<PolylineId, Polyline> _polylines = {};
+
+  DateTime _from, _to;
+  int _hours;
 
   DrawerBloc _bloc;
 
@@ -36,7 +56,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
     super.initState();
 
     _bloc = BlocProvider.of<DrawerBloc>(context);
-    _calendarController = DateRangePickerController();
 
     _pageController = PageController(
       initialPage: 0,
@@ -47,6 +66,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
     _setPodsMarkers();
   }
 
+  Future<void> _getMapStyle() async {
+    _mapStyle = await rootBundle.loadString('assets/maps_style/maps_style.txt');
+  }
+
   Future<void> _getMarkerIcon() async {
     _bitmapDescriptor = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(),
@@ -55,6 +78,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Future<void> _setPodsMarkers() async {
+    await _getMapStyle();
     await _getMarkerIcon();
     _markersList = Set();
 
@@ -64,7 +88,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
         position: LatLng(22.7533, 75.8937),
         icon: _bitmapDescriptor,
         onTap: () async {
-          await _showReservationDetailsSheet();
+          _panelController.open();
         },
       ),
     );
@@ -75,13 +99,53 @@ class _DrawerScreenState extends State<DrawerScreen> {
         position: LatLng(22.7244, 75.8839),
         icon: _bitmapDescriptor,
         onTap: () async {
-          await _showReservationDetailsSheet();
+          _panelController.open();
         },
       ),
     );
 
+    // _createPolylines(
+    //   Position(latitude: 22.7533, longitude: 75.8937),
+    //   Position(latitude: 22.7244, longitude: 75.8839),
+    // );
+
     await Future.delayed(Duration(seconds: 2));
     _bloc.setLoading = false;
+  }
+
+  Future<void> _createPolylines(Position start, Position destination) async {
+    // Initializing PolylinePoints
+    _polylinePoints = PolylinePoints();
+
+    // Generating the list of coordinates to be used for
+    // drawing the polylines
+    PolylineResult result = await _polylinePoints.getRouteBetweenCoordinates(
+      Constants.GOOGLE_MAPS_API_KEY, // Google Maps API Key
+      PointLatLng(start.latitude, start.longitude),
+      PointLatLng(destination.latitude, destination.longitude),
+      travelMode: TravelMode.transit,
+    );
+
+    // Adding the coordinates to the list
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        _polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+
+    // Defining an ID
+    PolylineId id = PolylineId('poly');
+
+    // Initializing Polyline
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.red,
+      points: _polylineCoordinates,
+      width: 3,
+    );
+
+    // Adding the polyline to the map
+    _polylines[id] = polyline;
   }
 
   void _showAppSettingsDialog() {
@@ -268,7 +332,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           onTap: () async {
             await Future.delayed(Duration(milliseconds: 150));
             Navigator.pop(context);
-            await Future.delayed(Duration(milliseconds: 200));
+            await Future.delayed(Duration(milliseconds: 250));
 
             switch (index) {
               case 0:
@@ -392,7 +456,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                             horizontal: _width * 0.06,
                             vertical: _height * 0.015,
                           ),
-                          color: Colors.black,
+                          color: Pigment.fromString(CustomColors.black1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(_width),
                           ),
@@ -504,7 +568,34 @@ class _DrawerScreenState extends State<DrawerScreen> {
         onPressed: () {},
       );
 
-  Widget _buildReserveNowButtonWidget({bool onSheet = false}) => MaterialButton(
+  Widget get _buildSheetReserveNowButtonWidget => MaterialButton(
+        height: 0,
+        minWidth: _width * 0.78,
+        padding: EdgeInsets.symmetric(
+          vertical: _height * 0.024,
+        ),
+        color: Pigment.fromString(CustomColors.red1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(_width),
+        ),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Text(
+          "Reserve Now",
+          style: GoogleFonts.inter(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: _width * 0.04,
+          ),
+        ),
+        onPressed: () async {
+          await Future.delayed(Duration(milliseconds: 150));
+
+          await _panelController.close();
+          Routes.codeScreen(context);
+        },
+      );
+
+  Widget get _buildReserveNowButtonWidget => MaterialButton(
         height: 0,
         minWidth: 0,
         padding: EdgeInsets.symmetric(
@@ -527,151 +618,320 @@ class _DrawerScreenState extends State<DrawerScreen> {
         onPressed: () async {
           await Future.delayed(Duration(milliseconds: 150));
 
-          if (!onSheet) {
-            _showPodsNearYouSheet();
-          } else {
-            print(_calendarController.selectedDates);
-            // Navigator.pop(context);
-            // await Future.delayed(Duration(milliseconds: 300));
-            // Routes.codeScreen(context);
-          }
+          _showPodsNearYouSheet();
         },
       );
 
-  Widget get _buildCalendarWidget => Container(
-        child: SfDateRangePicker(
-          controller: _calendarController,
-          selectionMode: DateRangePickerSelectionMode.multiple,
-          minDate: DateTime.now(),
-          showNavigationArrow: true,
-          selectionColor: Pigment.fromString(CustomColors.red4),
-          selectionTextStyle: GoogleFonts.inter(
-            color: Colors.black,
-            fontWeight: FontWeight.w800,
-            fontSize: _width * 0.038,
-          ),
-          headerStyle: DateRangePickerHeaderStyle(
-            textStyle: GoogleFonts.inter(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: _width * 0.038,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          monthCellStyle: DateRangePickerMonthCellStyle(
-            textStyle: GoogleFonts.inter(
-              color: Pigment.fromString(CustomColors.grey8),
-              fontWeight: FontWeight.w800,
-              fontSize: _width * 0.038,
-            ),
-            todayTextStyle: GoogleFonts.inter(
-              color: Pigment.fromString(CustomColors.grey8),
-              fontWeight: FontWeight.w800,
-              fontSize: _width * 0.038,
-            ),
-            todayCellDecoration: BoxDecoration(),
+  Widget _buildDateCostWidget({
+    @required CrossAxisAlignment crossAxisAlignment,
+    @required String title,
+    @required int dateType,
+  }) {
+    Widget valueWidget;
+
+    switch (dateType) {
+      case 0:
+        valueWidget = StreamBuilder<DateTime>(
+          initialData: null,
+          stream: _bloc.getFrom,
+          builder: (context, snapshot) {
+            _from = snapshot.data;
+            String value1, value2;
+
+            if (snapshot.data == null) {
+              value1 = "-";
+              value2 = "-";
+            } else {
+              DateTime dateTime = snapshot.data;
+
+              value1 = dateTime.day.toString();
+              value2 = DateFormat("MMM").format(dateTime);
+            }
+
+            return RichText(
+              textAlign: TextAlign.start,
+              text: TextSpan(
+                text: value1,
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: _width * 0.085,
+                ),
+                children: [
+                  TextSpan(
+                    text: value2,
+                    style: GoogleFonts.inter(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: _width * 0.035,
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+
+        break;
+      case 1:
+        valueWidget = StreamBuilder<DateTime>(
+          initialData: null,
+          stream: _bloc.getTo,
+          builder: (context, snapshot) {
+            _to = snapshot.data;
+            String value1, value2;
+
+            if (snapshot.data == null) {
+              value1 = "-";
+              value2 = "-";
+            } else {
+              DateTime dateTime = snapshot.data;
+
+              value1 = dateTime.day.toString();
+              value2 = DateFormat("MMM").format(dateTime);
+            }
+
+            return RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: value1,
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: _width * 0.085,
+                ),
+                children: [
+                  TextSpan(
+                    text: value2,
+                    style: GoogleFonts.inter(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: _width * 0.035,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
+        break;
+      default:
+        valueWidget = StreamBuilder<int>(
+          initialData: null,
+          stream: _bloc.getHours,
+          builder: (context, snapshot) {
+            _hours = snapshot.data;
+            String value1, value2;
+
+            if (snapshot.data == null) {
+              value1 = "-";
+              value2 = "-";
+            } else {
+              int hours = snapshot.data;
+
+              value1 = hours.toString();
+              value2 = "HR";
+
+              _bloc.setAmount = hours * 2.50;
+            }
+
+            return RichText(
+              maxLines: 1,
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                text: value1,
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: _width * 0.065,
+                ),
+                children: [
+                  TextSpan(
+                    text: value2,
+                    style: GoogleFonts.inter(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: _width * 0.025,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+    }
+
+    return Column(
+      crossAxisAlignment: crossAxisAlignment,
+      children: <Widget>[
+        Text(
+          title,
+          textAlign: TextAlign.start,
+          style: GoogleFonts.inter(
+            color: Pigment.fromString(CustomColors.grey19),
+            fontWeight: FontWeight.w500,
+            fontSize: _width * 0.037,
           ),
         ),
+        SizedBox(
+          height: _height * 0.012,
+        ),
+        valueWidget,
+      ],
+    );
+  }
+
+  Future<DateTime> _showDatePicker(DateTime initialDate) async {
+    DateTime dateTime = await showDatePicker(
+        context: context,
+        initialDate: initialDate ?? DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(DateTime.now().year + 10),
+        builder: (context, datePicker) {
+          return Theme(
+            data: ThemeData(
+              primarySwatch: ColorToMaterial(
+                Pigment.fromString(CustomColors.black1),
+              ).getMaterialColor(),
+            ),
+            child: datePicker,
+          );
+        });
+
+    return dateTime;
+  }
+
+  Widget get _buildCalendarDaysCostWidget => Column(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: _width * 0.017),
+              child: Text(
+                "Select a Date",
+                textAlign: TextAlign.start,
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: _width * 0.04,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: _height * 0.017,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Pigment.fromString(CustomColors.grey12),
+              borderRadius: BorderRadius.circular(_width * 0.035),
+            ),
+            padding: EdgeInsets.all(_width * 0.055),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    child: _buildDateCostWidget(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      dateType: 0,
+                      title: "FROM",
+                    ),
+                    onTap: () async {
+                      DateTime dateTime = await _showDatePicker(_from);
+
+                      if (dateTime != null) {
+                        _bloc.setFrom = dateTime;
+                      }
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    child: _buildDateCostWidget(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      dateType: 1,
+                      title: "TO",
+                    ),
+                    onTap: () async {
+                      DateTime dateTime = await _showDatePicker(_to);
+
+                      if (dateTime != null) {
+                        _bloc.setTo = dateTime;
+                      }
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: _buildDateCostWidget(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    dateType: null,
+                    title: "TOTAL",
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: _height * 0.07,
+          ),
+          StreamBuilder<double>(
+              initialData: 0,
+              stream: _bloc.getAmount,
+              builder: (context, snapshot) {
+                return Text(
+                  "Total charge: \$${snapshot.data}",
+                  textAlign: TextAlign.start,
+                  style: GoogleFonts.inter(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w900,
+                    fontSize: _width * 0.048,
+                  ),
+                );
+              }),
+          SizedBox(
+            height: _height * 0.025,
+          ),
+          _buildSheetReserveNowButtonWidget,
+        ],
       );
 
-  // Widget get _buildCalendarWidget => TableCalendar(
-  //       calendarController: _calendarController,
-  //       initialCalendarFormat: CalendarFormat.month,
-  //       availableGestures: AvailableGestures.none,
-  //       availableCalendarFormats: {CalendarFormat.month: 'Month'},
-  //       rowHeight: _height * 0.045,
-  //       startDay: DateTime.now(),
-  //       initialSelectedDay: DateTime.now(),
-  //       onDaySelected: (dateTime, list) {
-  //         print(dateTime.toString());
-  //       },
-  //       calendarStyle: CalendarStyle(
-  //         contentPadding: EdgeInsets.zero,
-  //         highlightToday: false,
-  //         highlightSelected: false,
-  //         outsideDaysVisible: false,
-  //         weekdayStyle: GoogleFonts.inter(
-  //           color: Pigment.fromString(CustomColors.grey8),
-  //           fontWeight: FontWeight.w800,
-  //           fontSize: _width * 0.038,
-  //         ),
-  //         weekendStyle: GoogleFonts.inter(
-  //           color: Pigment.fromString(CustomColors.grey8),
-  //           fontWeight: FontWeight.w800,
-  //           fontSize: _width * 0.038,
-  //         ),
-  //         holidayStyle: GoogleFonts.inter(
-  //           color: Pigment.fromString(CustomColors.grey8),
-  //           fontWeight: FontWeight.w800,
-  //           fontSize: _width * 0.038,
-  //         ),
-  //       ),
-  //       daysOfWeekStyle: DaysOfWeekStyle(
-  //         dowTextBuilder: (dateTime, _) {
-  //           return DateFormat('E').format(dateTime)[0];
-  //         },
-  //         weekdayStyle: GoogleFonts.inter(
-  //           color: Colors.black,
-  //           fontWeight: FontWeight.w800,
-  //           fontSize: _width * 0.038,
-  //         ),
-  //         weekendStyle: GoogleFonts.inter(
-  //           color: Colors.black,
-  //           fontWeight: FontWeight.w800,
-  //           fontSize: _width * 0.038,
-  //         ),
-  //       ),
-  //       headerStyle: HeaderStyle(
-  //         formatButtonVisible: false,
-  //         formatButtonShowsNext: false,
-  //         centerHeaderTitle: true,
-  //         formatButtonPadding: EdgeInsets.zero,
-  //         headerPadding: EdgeInsets.zero,
-  //         leftChevronMargin: EdgeInsets.zero,
-  //         rightChevronMargin: EdgeInsets.zero,
-  //         leftChevronPadding: EdgeInsets.zero,
-  //         rightChevronPadding: EdgeInsets.zero,
-  //         headerMargin: EdgeInsets.only(bottom: _height * 0.03),
-  //         titleTextStyle: GoogleFonts.inter(
-  //           color: Colors.black,
-  //           fontWeight: FontWeight.bold,
-  //           fontSize: _width * 0.038,
-  //         ),
-  //       ),
-  //       builders: CalendarBuilders(
-  //         selectedDayBuilder: (context, dateTime, list) {
-  //           return Container(
-  //             decoration: BoxDecoration(
-  //               color: Pigment.fromString(CustomColors.red4),
-  //               shape: BoxShape.circle,
-  //             ),
-  //             alignment: Alignment.center,
-  //             child: Text(
-  //               dateTime.day.toString(),
-  //               textAlign: TextAlign.center,
-  //               style: GoogleFonts.inter(
-  //                 color: Colors.black,
-  //                 fontWeight: FontWeight.w800,
-  //                 fontSize: _width * 0.038,
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     );
+  Widget get _buildSlidingPanelWidget => SlidingUpPanel(
+        controller: _panelController,
+        defaultPanelState: PanelState.CLOSED,
+        backdropEnabled: true,
+        minHeight: 0,
+        maxHeight: _height * 0.75,
+        onPanelClosed: () {
+          _bloc.setFrom = null;
+          _bloc.setTo = null;
+          _bloc.setAmount = 0;
 
-  Future<void> _showReservationDetailsSheet() async {
-    return await showMaterialModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      enableDrag: true,
-      isDismissible: false,
-      bounce: true,
-      expand: false,
-      builder: (BuildContext context, ScrollController controller) {
-        return Container(
-          height: _height * 0.7,
-          width: double.infinity,
+          _scrollController.jumpTo(0);
+        },
+        footer: Container(),
+        header: Container(
+          width: _width,
+          height: _height * 0.05,
+          alignment: Alignment.center,
+          child: Container(
+            height: _height * 0.005,
+            width: _width * 0.35,
+            decoration: BoxDecoration(
+              color: Pigment.fromString(CustomColors.grey12),
+              borderRadius: BorderRadius.circular(_width),
+            ),
+          ),
+        ),
+        isDraggable: true,
+        panel: Container(
+          height: _height * 0.75,
+          width: _width,
+          padding: EdgeInsets.only(
+            top: _height * 0.05,
+          ),
           child: NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (overScroll) {
               overScroll.disallowGlow();
@@ -679,24 +939,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
               return true;
             },
             child: SingleChildScrollView(
+              controller: _scrollController,
               scrollDirection: Axis.vertical,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
-                    height: _height * 0.02,
-                  ),
-                  Container(
-                    height: _height * 0.005,
-                    width: _width * 0.35,
-                    decoration: BoxDecoration(
-                      color: Pigment.fromString(CustomColors.grey12),
-                      borderRadius: BorderRadius.circular(_width),
-                    ),
-                  ),
-                  SizedBox(
-                    height: _height * 0.04,
-                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: _width * 0.05),
                     child: Text(
@@ -758,6 +1005,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           child: Column(
                             children: <Widget>[
                               _buildBottomSheetInfoRowWidget(
+                                "Price:",
+                                "\$2.50/hr",
+                              ),
+                              SizedBox(
+                                height: _height * 0.025,
+                              ),
+                              _buildBottomSheetInfoRowWidget(
                                 "Charging ports per bay:",
                                 "20",
                               ),
@@ -779,44 +1033,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: _height * 0.05,
+                          height: _height * 0.043,
                         ),
-                        _buildCalendarWidget,
-                        SizedBox(
-                          height: _height * 0.02,
-                        ),
-                        Text(
-                          "7 days selected",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w900,
-                            fontSize: _width * 0.034,
-                          ),
-                        ),
-                        SizedBox(
-                          height: _height * 0.04,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                "Total charge: \$210",
-                                textAlign: TextAlign.start,
-                                style: GoogleFonts.inter(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: _width * 0.036,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: _width * 0.03,
-                            ),
-                            _buildReserveNowButtonWidget(onSheet: true),
-                          ],
-                        ),
+                        _buildCalendarDaysCostWidget,
                         SizedBox(
                           height: _height * 0.03,
                         ),
@@ -827,17 +1046,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 
   Widget _buildNavigateIconButtonWidget() => MaterialButton(
         height: 0,
         minWidth: 0,
         padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.04,
-          vertical: _height * 0.015,
+          horizontal: _width * 0.045,
+          vertical: _height * 0.018,
         ),
         color: Pigment.fromString(CustomColors.red1),
         shape: RoundedRectangleBorder(
@@ -850,16 +1067,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
           children: <Widget>[
             Image.asset(
               "assets/images/navigate.webp",
-              width: _width * 0.03,
-              height: _width * 0.03,
+              width: _width * 0.042,
+              height: _width * 0.042,
             ),
-            SizedBox(width: _width * 0.02),
+            SizedBox(width: _width * 0.022),
             Text(
               "Navigate",
               style: GoogleFonts.inter(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: _width * 0.033,
+                fontSize: _width * 0.042,
               ),
             ),
           ],
@@ -886,55 +1103,74 @@ class _DrawerScreenState extends State<DrawerScreen> {
               ),
               Align(
                 alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: EdgeInsets.all(_width * 0.04),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "Washignton DC",
-                              maxLines: 2,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: _width * 0.04,
-                              ),
-                            ),
-                            Text(
-                              "1667 K Street NW",
-                              maxLines: 2,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: _width * 0.028,
-                              ),
-                            ),
-                            Text(
-                              "1.9 miles",
-                              style: GoogleFonts.inter(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: _width * 0.026,
-                              ),
-                            ),
-                          ],
+                child: Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: <Widget>[
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: Container(
+                          height: _height * 0.09,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.0),
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        width: _width * 0.03,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: _width * 0.04,
+                        vertical: _height * 0.015,
                       ),
-                      _buildNavigateIconButtonWidget(),
-                    ],
-                  ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Washignton DC",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: _width * 0.042,
+                                  ),
+                                ),
+                                Text(
+                                  "1667 K Street NW",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: _width * 0.03,
+                                  ),
+                                ),
+                                Text(
+                                  "1.9 miles",
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: _width * 0.028,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: _width * 0.03,
+                          ),
+                          _buildNavigateIconButtonWidget(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1011,7 +1247,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
               child: GoogleMap(
                 initialCameraPosition: CameraPosition(
                   target: LatLng(22.7533, 75.8937),
+                  zoom: 12.5,
                 ),
+                // polylines: Set<Polyline>.of(_polylines.values),
                 markers: _markersList,
                 buildingsEnabled: true,
                 compassEnabled: false,
@@ -1019,12 +1257,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 rotateGesturesEnabled: true,
                 scrollGesturesEnabled: true,
                 tiltGesturesEnabled: true,
-                myLocationEnabled: false,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
                 zoomControlsEnabled: false,
-                mapToolbarEnabled: false,
                 indoorViewEnabled: true,
+                mapToolbarEnabled: false,
                 onCameraMove: (CameraPosition position) {},
                 onMapCreated: (controller) {
+                  controller.setMapStyle(_mapStyle);
                   this._mapController = controller;
                   Future.delayed(
                     Duration(milliseconds: 500),
@@ -1041,6 +1281,42 @@ class _DrawerScreenState extends State<DrawerScreen> {
           ],
         );
       });
+
+  Widget get _buildContentWidget => Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          _buildGoogleMapsWidget,
+          Align(
+            alignment: Alignment.topCenter,
+            child: _buildAppbarWidget,
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              padding: EdgeInsets.only(
+                bottom: _height * 0.03,
+                right: _width * 0.05,
+                left: _width * 0.05,
+              ),
+              width: double.infinity,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: <Widget>[
+                  _buildReserveNowButtonWidget,
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: _buildMyLocationButtonWidget,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildSlidingPanelWidget,
+          ),
+        ],
+      );
 
   Widget get _buildCircularProgressWidget => Center(
         child: CircularProgressIndicator(
@@ -1067,54 +1343,34 @@ class _DrawerScreenState extends State<DrawerScreen> {
         systemNavigationBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
       ),
-      child: Scaffold(
-        key: _sfKey,
-        backgroundColor: Colors.white,
-        body: StreamBuilder<bool>(
-            initialData: true,
-            stream: _bloc.getLoading,
-            builder: (context, snapshot) {
-              return snapshot.data
-                  ? _buildCircularProgressWidget
-                  : Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        _buildGoogleMapsWidget,
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: _buildAppbarWidget,
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            padding: EdgeInsets.only(
-                              bottom: _height * 0.03,
-                              right: _width * 0.05,
-                              left: _width * 0.05,
-                            ),
-                            width: double.infinity,
-                            child: Stack(
-                              alignment: Alignment.bottomCenter,
-                              children: <Widget>[
-                                _buildReserveNowButtonWidget(),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: _buildMyLocationButtonWidget,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-            }),
-        drawer: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Drawer(
-            child: _buildDrawerWidget,
+      child: WillPopScope(
+        child: Scaffold(
+          key: _sfKey,
+          backgroundColor: Colors.white,
+          body: StreamBuilder<bool>(
+              initialData: true,
+              stream: _bloc.getLoading,
+              builder: (context, snapshot) {
+                return snapshot.data
+                    ? _buildCircularProgressWidget
+                    : _buildContentWidget;
+              }),
+          drawer: Container(
+            width: double.infinity,
+            height: double.infinity,
+            child: Drawer(
+              child: _buildDrawerWidget,
+            ),
           ),
         ),
+        onWillPop: () {
+          if (_panelController.isPanelOpen) {
+            _panelController.close();
+            return Future.value(false);
+          }
+
+          return Future.value(true);
+        },
       ),
     );
   }
@@ -1122,7 +1378,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
   @override
   void dispose() {
     _mapController.dispose();
-    _calendarController.dispose();
+    _scrollController..dispose();
+
     super.dispose();
   }
 }

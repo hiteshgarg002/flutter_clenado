@@ -196,7 +196,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(
                     horizontal: _width * 0.05, vertical: _height * 0.01),
-                itemCount: 15,
+                itemCount: 5,
                 itemBuilder: (BuildContext context, int index) {
                   return _buildListViewItemWidget();
                 },

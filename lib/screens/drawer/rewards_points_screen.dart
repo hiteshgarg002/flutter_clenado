@@ -70,6 +70,98 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
         preferredSize: AppBar().preferredSize,
       );
 
+  Widget _buildRecentListItemWidget() => Container(
+        margin: EdgeInsets.only(bottom: _height * 0.03),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Image.asset(
+                    "assets/images/charge_circular.webp",
+                    width: _width * 0.13,
+                    height: _width * 0.13,
+                  ),
+                  SizedBox(
+                    width: _width * 0.025,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "1667 K Street NW",
+                        style: GoogleFonts.inter(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: _width * 0.038,
+                        ),
+                      ),
+                      SizedBox(
+                        height: _height * 0.005,
+                      ),
+                      Text(
+                        "08/12/2020 19:32",
+                        style: GoogleFonts.inter(
+                          color: Pigment.fromString(CustomColors.grey17),
+                          fontWeight: FontWeight.w600,
+                          fontSize: _width * 0.033,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              "20",
+              style: GoogleFonts.inter(
+                color: Colors.black,
+                fontWeight: FontWeight.w900,
+                fontSize: _width * 0.07,
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget get _buildCircularProgressWidget => CircularPercentIndicator(
+        radius: _width * 0.47,
+        lineWidth: _width * 0.065,
+        percent: 0.65,
+        center: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "650",
+              style: GoogleFonts.inter(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: _width * 0.09,
+              ),
+            ),
+            Text(
+              "of 1000 points",
+              style: GoogleFonts.inter(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: _width * 0.028,
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Pigment.fromString(CustomColors.grey13),
+        progressColor: Pigment.fromString(CustomColors.red4),
+        animateFromLastPercent: true,
+        animation: true,
+        circularStrokeCap: CircularStrokeCap.round,
+        animationDuration: 700,
+        backgroundWidth: _width * 0.065,
+      );
+
   @override
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
@@ -86,39 +178,92 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
             SizedBox(
               height: _height * 0.03,
             ),
-            CircularPercentIndicator(
-              radius: _width * 0.47,
-              lineWidth: _width * 0.065,
-              percent: 0.65,
-              center: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            _buildCircularProgressWidget,
+            SizedBox(
+              height: _height * 0.07,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: _width * 0.055,
+                right: _width * 0.04,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "650",
+                    "Recents",
                     style: GoogleFonts.inter(
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: _width * 0.09,
+                      fontWeight: FontWeight.w900,
+                      fontSize: _width * 0.06,
                     ),
                   ),
-                  Text(
-                    "of 1000 points",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: _width * 0.028,
+                  InkWell(
+                    borderRadius: BorderRadius.circular(_width * 0.02),
+                    child: Padding(
+                      padding: EdgeInsets.all(_width * 0.015),
+                      child: Text(
+                        "See all",
+                        style: GoogleFonts.inter(
+                          color: Pigment.fromString(CustomColors.grey10),
+                          fontWeight: FontWeight.bold,
+                          fontSize: _width * 0.037,
+                        ),
+                      ),
                     ),
+                    onTap: () {},
                   ),
                 ],
               ),
-              backgroundColor: Pigment.fromString(CustomColors.grey13),
-              progressColor: Pigment.fromString(CustomColors.red4),
-              animateFromLastPercent: true,
-              animation: true,
-              circularStrokeCap: CircularStrokeCap.round,
-              animationDuration: 700,
-              backgroundWidth: _width * 0.065,
+            ),
+            SizedBox(
+              height: _height * 0.035,
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: _width * 0.055),
+                child: Text(
+                  "August 2020",
+                  style: GoogleFonts.inter(
+                    color: Pigment.fromString(CustomColors.grey17),
+                    fontWeight: FontWeight.w500,
+                    fontSize: _width * 0.034,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: _height * 0.012,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: _width * 0.055),
+              child: Divider(
+                height: 0,
+              ),
+            ),
+            SizedBox(
+              height: _height * 0.012,
+            ),
+            Expanded(
+              child: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (overScroll) {
+                  overScroll.disallowGlow();
 
+                  return true;
+                },
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _width * 0.055,
+                    vertical: _height * 0.013,
+                  ),
+                  itemCount: 5,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildRecentListItemWidget();
+                  },
+                ),
+              ),
             ),
           ],
         ),

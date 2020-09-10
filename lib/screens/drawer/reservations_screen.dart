@@ -107,7 +107,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           horizontal: _width * 0.04,
           vertical: _height * 0.018,
         ),
-        color: Colors.black,
+        color: Pigment.fromString(CustomColors.black1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -420,7 +420,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(
                     horizontal: _width * 0.05, vertical: _height * 0.01),
-                itemCount: 15,
+                itemCount: 5,
                 itemBuilder: (BuildContext context, int index) {
                   return _buildListViewItemWidget();
                 },

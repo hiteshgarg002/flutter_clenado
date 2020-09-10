@@ -77,7 +77,7 @@ class _WalletScreenState extends State<WalletScreen> {
           horizontal: _width * 0.03,
           vertical: _height * 0.018,
         ),
-        color: Colors.black,
+        color: Pigment.fromString(CustomColors.black1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -131,7 +131,7 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget get _buildBalanceCardWidget => Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Pigment.fromString(CustomColors.red5),
+          color: Pigment.fromString(CustomColors.black1),
           borderRadius: BorderRadius.circular(_width * 0.03),
         ),
         padding: EdgeInsets.symmetric(

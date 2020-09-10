@@ -24,10 +24,16 @@ class CustomColors {
   static const String grey14 = "#999999";
   static const String grey15 = "#757575";
   static const String grey16 = "#969696";
+  static const String grey17 = "#787878";
+  static const String grey18 = "#DBDBDB";
+  static const String grey19 = "#A4A2A4";
 
   static const String green1 = "#04EB00";
 
   static const String blue1 = "#0047C2";
+  static const String blue2 = "#003EB3";
+
+  static const String black1 = "#121516";
 }
 
 class ColorToMaterial {
