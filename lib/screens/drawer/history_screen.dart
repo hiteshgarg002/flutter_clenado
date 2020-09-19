@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:flutter_clenado/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
@@ -23,7 +25,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -41,7 +43,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -57,7 +59,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   child: Text(
                     "History",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -126,7 +128,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 Text(
                   "1667 K Street NW, Washington DC 20006",
                   style: GoogleFonts.inter(
-                    color: Colors.black,
+                    // color: Colors.black,
                     fontWeight: FontWeight.w600,
                     fontSize: _width * 0.036,
                   ),
@@ -179,31 +181,36 @@ class _HistoryScreenState extends State<HistoryScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: _height * 0.03,
-          ),
-          Expanded(
-            child: NotificationListener<OverscrollIndicatorNotification>(
-              onNotification: (overScroll) {
-                overScroll.disallowGlow();
-                return true;
-              },
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(
-                    horizontal: _width * 0.05, vertical: _height * 0.01),
-                itemCount: 5,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildListViewItemWidget();
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: Column(
+          children: <Widget>[
+            SizedBox(
+              height: _height * 0.03,
+            ),
+            Expanded(
+              child: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (overScroll) {
+                  overScroll.disallowGlow();
+                  return true;
                 },
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _width * 0.05,
+                    vertical: _height * 0.01,
+                  ),
+                  itemCount: 5,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildListViewItemWidget();
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

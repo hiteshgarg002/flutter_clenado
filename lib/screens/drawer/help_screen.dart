@@ -1,6 +1,8 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 
@@ -23,7 +25,7 @@ class _HelpScreenState extends State<HelpScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -41,7 +43,7 @@ class _HelpScreenState extends State<HelpScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -57,7 +59,7 @@ class _HelpScreenState extends State<HelpScreen> {
                   child: Text(
                     "Help",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -98,7 +100,7 @@ class _HelpScreenState extends State<HelpScreen> {
             child: Text(
               question,
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.w800,
                 fontSize: _width * 0.037,
               ),
@@ -113,109 +115,112 @@ class _HelpScreenState extends State<HelpScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.075,
-          vertical: _height * 0.02,
-        ),
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              "All Topics",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-                fontSize: _width * 0.052,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: _width * 0.075,
+            vertical: _height * 0.02,
+          ),
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "All Topics",
+                style: GoogleFonts.inter(
+                  // color: Colors.black,
+                  fontWeight: FontWeight.w900,
+                  fontSize: _width * 0.052,
+                ),
               ),
-            ),
-            SizedBox(
-              height: _height * 0.035,
-            ),
-            _buildExpandablePanelWidget(
-              "How do i find charging locations?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.015,
-            ),
-            _buildExpandablePanelWidget(
-              "How do i unlock my charging bay?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.015,
-            ),
-            _buildExpandablePanelWidget(
-              "How many scooters can i charge?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.015,
-            ),
-            _buildExpandablePanelWidget(
-              "What brand of scooters can i charge?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.015,
-            ),
-            _buildExpandablePanelWidget(
-              "How much does it cost?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.015,
-            ),
-            _buildExpandablePanelWidget(
-              "Can other people access my bay?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.015,
-            ),
-            _buildExpandablePanelWidget(
-              "What if there is an emergency?",
-              "",
-            ),
-            SizedBox(
-              height: _height * 0.08,
-            ),
-            Text(
-              "Support Center",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-                fontSize: _width * 0.052,
+              SizedBox(
+                height: _height * 0.035,
               ),
-            ),
-            SizedBox(
-              height: _height * 0.04,
-            ),
-            Text(
-              "Text message",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: _width * 0.043,
+              _buildExpandablePanelWidget(
+                "How do i find charging locations?",
+                "",
               ),
-            ),
-            SizedBox(
-              height: _height * 0.025,
-            ),
-            Text(
-              "Call support",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: _width * 0.043,
+              SizedBox(
+                height: _height * 0.015,
               ),
-            ),
-          ],
+              _buildExpandablePanelWidget(
+                "How do i unlock my charging bay?",
+                "",
+              ),
+              SizedBox(
+                height: _height * 0.015,
+              ),
+              _buildExpandablePanelWidget(
+                "How many scooters can i charge?",
+                "",
+              ),
+              SizedBox(
+                height: _height * 0.015,
+              ),
+              _buildExpandablePanelWidget(
+                "What brand of scooters can i charge?",
+                "",
+              ),
+              SizedBox(
+                height: _height * 0.015,
+              ),
+              _buildExpandablePanelWidget(
+                "How much does it cost?",
+                "",
+              ),
+              SizedBox(
+                height: _height * 0.015,
+              ),
+              _buildExpandablePanelWidget(
+                "Can other people access my bay?",
+                "",
+              ),
+              SizedBox(
+                height: _height * 0.015,
+              ),
+              _buildExpandablePanelWidget(
+                "What if there is an emergency?",
+                "",
+              ),
+              SizedBox(
+                height: _height * 0.08,
+              ),
+              Text(
+                "Support Center",
+                style: GoogleFonts.inter(
+                  // color: Colors.black,
+                  fontWeight: FontWeight.w900,
+                  fontSize: _width * 0.052,
+                ),
+              ),
+              SizedBox(
+                height: _height * 0.04,
+              ),
+              Text(
+                "Text message",
+                style: GoogleFonts.inter(
+                  // color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: _width * 0.043,
+                ),
+              ),
+              SizedBox(
+                height: _height * 0.025,
+              ),
+              Text(
+                "Call support",
+                style: GoogleFonts.inter(
+                  // color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: _width * 0.043,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

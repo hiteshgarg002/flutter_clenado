@@ -5,6 +5,7 @@ import 'package:flutter_clenado/routes/routes.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
 import 'package:flutter_clenado/utils/shared_preferences_util.dart';
 import 'package:flutter_clenado/utils/social_signin_type_enum.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
@@ -58,9 +59,8 @@ class _SignupScreenState extends State<SignupScreen> {
         focusNode: focusNode,
         keyboardType: inputType,
         cursorWidth: _width * 0.007,
-        cursorColor: Colors.black,
         style: GoogleFonts.inter(
-          color: Colors.black,
+          // color: Colors.black,
           fontWeight: FontWeight.w600,
           fontSize: _width * 0.038,
         ),
@@ -329,166 +329,169 @@ class _SignupScreenState extends State<SignupScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      key: _sfKey,
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overScroll) {
-          overScroll.disallowGlow();
-          return true;
-        },
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(
-                height: _height * 0.09,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: _width * 0.015),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(_width * 0.02),
-                          child: Padding(
-                            padding: EdgeInsets.all(_width * 0.015),
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: Colors.black,
-                              size: _width * 0.08,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        key: _sfKey,
+        resizeToAvoidBottomInset: true,
+        // backgroundColor: Colors.white,
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overScroll) {
+            overScroll.disallowGlow();
+            return true;
+          },
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(
+                  height: _height * 0.09,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: _width * 0.015),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(_width * 0.02),
+                            child: Padding(
+                              padding: EdgeInsets.all(_width * 0.015),
+                              child: Icon(
+                                Icons.arrow_back,
+                                // color: Colors.black,
+                                size: _width * 0.08,
+                              ),
                             ),
+                            onTap: () async {
+                              await Future.delayed(Duration(milliseconds: 150));
+                              Navigator.pop(context);
+                            },
                           ),
-                          onTap: () async {
-                            await Future.delayed(Duration(milliseconds: 150));
-                            Navigator.pop(context);
-                          },
                         ),
                       ),
-                    ),
-                    Text(
-                      "CREATE ACCOUNT",
-                      style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w900,
-                        fontSize: _width * 0.065,
+                      Text(
+                        "CREATE ACCOUNT",
+                        style: GoogleFonts.inter(
+                          // color: Colors.black,
+                          fontWeight: FontWeight.w900,
+                          fontSize: _width * 0.065,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: _height * 0.065,
-              ),
-              _buildNameWidget,
-              SizedBox(
-                height: _height * 0.025,
-              ),
-              _buildEmailWidget,
-              SizedBox(
-                height: _height * 0.025,
-              ),
-              _buildPasswordWidget,
-              SizedBox(
-                height: _height * 0.025,
-              ),
-              _buildRepeatPasswordWidget,
-              SizedBox(
-                height: _height * 0.023,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: _width * 0.1),
-                child: Text(
-                  "By registering, you confirm that you accept our Terms of Use and Privacy Policy",
-                  style: GoogleFonts.inter(
-                    color: Pigment.fromString(CustomColors.grey8),
-                    fontWeight: FontWeight.bold,
-                    fontSize: _width * 0.028,
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: _height * 0.023,
-              ),
-              StreamBuilder<bool>(
-                  initialData: false,
-                  stream: _bloc.getLoading,
-                  builder: (context, snapshot) {
-                    return snapshot.data
-                        ? _buildCircularProgressWidget
-                        : _buildRegisterButtonWidget;
-                  }),
-              SizedBox(
-                height: _height * 0.025,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: _width * 0.07),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Divider(
-                        height: 0,
-                        color: Pigment.fromString(CustomColors.grey9),
-                        endIndent: 0,
-                        indent: 0,
-                        thickness: _height * 0.001,
-                      ),
-                    ),
-                    SizedBox(
-                      width: _width * 0.015,
-                    ),
-                    Text(
-                      "Or sign in with",
-                      style: GoogleFonts.inter(
-                        color: Pigment.fromString(CustomColors.grey8),
-                        fontWeight: FontWeight.w500,
-                        fontSize: _width * 0.031,
-                      ),
-                    ),
-                    SizedBox(
-                      width: _width * 0.015,
-                    ),
-                    Expanded(
-                      child: Divider(
-                        height: 0,
-                        color: Pigment.fromString(CustomColors.grey9),
-                        endIndent: 0,
-                        indent: 0,
-                        thickness: _height * 0.001,
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  height: _height * 0.065,
                 ),
-              ),
-              SizedBox(
-                height: _height * 0.035,
-              ),
-              _buildSocialSigninButtonWidget(SocialSigninType.FB),
-              SizedBox(
-                height: _height * 0.023,
-              ),
-              _buildSocialSigninButtonWidget(SocialSigninType.GOOGLE),
-              SizedBox(
-                height: _height * 0.023,
-              ),
-              _buildSocialSigninButtonWidget(SocialSigninType.APPLE),
-              SizedBox(
-                height: _height * 0.037,
-              ),
-              _buildSignupWidget,
-              SizedBox(
-                height: _height * 0.02,
-              ),
-            ],
+                _buildNameWidget,
+                SizedBox(
+                  height: _height * 0.025,
+                ),
+                _buildEmailWidget,
+                SizedBox(
+                  height: _height * 0.025,
+                ),
+                _buildPasswordWidget,
+                SizedBox(
+                  height: _height * 0.025,
+                ),
+                _buildRepeatPasswordWidget,
+                SizedBox(
+                  height: _height * 0.023,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: _width * 0.1),
+                  child: Text(
+                    "By registering, you confirm that you accept our Terms of Use and Privacy Policy",
+                    style: GoogleFonts.inter(
+                      color: Pigment.fromString(CustomColors.grey8),
+                      fontWeight: FontWeight.bold,
+                      fontSize: _width * 0.028,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: _height * 0.023,
+                ),
+                StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _bloc.getLoading,
+                    builder: (context, snapshot) {
+                      return snapshot.data
+                          ? _buildCircularProgressWidget
+                          : _buildRegisterButtonWidget;
+                    }),
+                SizedBox(
+                  height: _height * 0.025,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: _width * 0.07),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Divider(
+                          height: 0,
+                          color: Pigment.fromString(CustomColors.grey9),
+                          endIndent: 0,
+                          indent: 0,
+                          thickness: _height * 0.001,
+                        ),
+                      ),
+                      SizedBox(
+                        width: _width * 0.015,
+                      ),
+                      Text(
+                        "Or sign in with",
+                        style: GoogleFonts.inter(
+                          color: Pigment.fromString(CustomColors.grey8),
+                          fontWeight: FontWeight.w500,
+                          fontSize: _width * 0.031,
+                        ),
+                      ),
+                      SizedBox(
+                        width: _width * 0.015,
+                      ),
+                      Expanded(
+                        child: Divider(
+                          height: 0,
+                          color: Pigment.fromString(CustomColors.grey9),
+                          endIndent: 0,
+                          indent: 0,
+                          thickness: _height * 0.001,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: _height * 0.035,
+                ),
+                _buildSocialSigninButtonWidget(SocialSigninType.FB),
+                SizedBox(
+                  height: _height * 0.023,
+                ),
+                _buildSocialSigninButtonWidget(SocialSigninType.GOOGLE),
+                SizedBox(
+                  height: _height * 0.023,
+                ),
+                _buildSocialSigninButtonWidget(SocialSigninType.APPLE),
+                SizedBox(
+                  height: _height * 0.037,
+                ),
+                _buildSignupWidget,
+                SizedBox(
+                  height: _height * 0.02,
+                ),
+              ],
+            ),
           ),
         ),
       ),

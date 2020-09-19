@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:flutter_clenado/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
@@ -35,7 +37,7 @@ class _AccountScreenState extends State<AccountScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -53,7 +55,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -69,7 +71,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Text(
                     "Account",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -98,7 +100,7 @@ class _AccountScreenState extends State<AccountScreen> {
             child: Text(
               title,
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: _width * 0.042,
               ),
@@ -110,14 +112,16 @@ class _AccountScreenState extends State<AccountScreen> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(_width),
-              color: Pigment.fromString(CustomColors.grey1),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Pigment.fromString(CustomColors.black3)
+                  : Pigment.fromString(CustomColors.grey1),
             ),
             child: TextField(
               obscureText: obscureText,
               controller: controller,
               focusNode: focusNode,
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.w500,
                 fontSize: _width * 0.04,
               ),
@@ -148,103 +152,110 @@ class _AccountScreenState extends State<AccountScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.055,
-          vertical: _height * 0.02,
-        ),
-        scrollDirection: Axis.vertical,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: _height * 0.03,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: _buildTextFieldWidget(
-                    title: "First Name",
-                    controller: _fNameController,
-                    focusNode: _fNameFocusNode,
-                    hint: "George",
-                  ),
-                ),
-                SizedBox(width: _width * 0.04),
-                Expanded(
-                  child: _buildTextFieldWidget(
-                    title: "Last Name",
-                    controller: _lNameController,
-                    focusNode: _lNameFocusNode,
-                    hint: "Msuku",
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: _height * 0.05,
-            ),
-            _buildTextFieldWidget(
-              title: "Email",
-              controller: _emailController,
-              focusNode: _emailFocusNode,
-              hint: "georgemsuku30@gmail.com",
-              inputType: TextInputType.emailAddress,
-            ),
-            SizedBox(
-              height: _height * 0.05,
-            ),
-            _buildTextFieldWidget(
-              title: "Phone Number",
-              controller: _mobileController,
-              focusNode: _mobileFocusNode,
-              hint: "+1 679-456-2987",
-              inputType: TextInputType.phone,
-            ),
-            SizedBox(
-              height: _height * 0.05,
-            ),
-            _buildTextFieldWidget(
-              title: "Password",
-              controller: _pwdController,
-              focusNode: _pwdFocusNode,
-              hint: "*********",
-              inputType: TextInputType.visiblePassword,
-              obscureText: true,
-            ),
-            SizedBox(
-              height: _height * 0.05,
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: MaterialButton(
-                height: 0,
-                minWidth: 0,
-                padding: EdgeInsets.symmetric(
-                  horizontal: _width * 0.11,
-                  vertical: _height * 0.0245,
-                ),
-                color: Pigment.fromString(CustomColors.black1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(_width),
-                ),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                child: Text(
-                  "Save Info",
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: _width * 0.041,
-                  ),
-                ),
-                onPressed: () {},
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: _width * 0.055,
+            vertical: _height * 0.02,
+          ),
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: _height * 0.03,
               ),
-            ),
-          ],
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: _buildTextFieldWidget(
+                      title: "First Name",
+                      controller: _fNameController,
+                      focusNode: _fNameFocusNode,
+                      hint: "George",
+                    ),
+                  ),
+                  SizedBox(width: _width * 0.04),
+                  Expanded(
+                    child: _buildTextFieldWidget(
+                      title: "Last Name",
+                      controller: _lNameController,
+                      focusNode: _lNameFocusNode,
+                      hint: "Msuku",
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: _height * 0.05,
+              ),
+              _buildTextFieldWidget(
+                title: "Email",
+                controller: _emailController,
+                focusNode: _emailFocusNode,
+                hint: "georgemsuku30@gmail.com",
+                inputType: TextInputType.emailAddress,
+              ),
+              SizedBox(
+                height: _height * 0.05,
+              ),
+              _buildTextFieldWidget(
+                title: "Phone Number",
+                controller: _mobileController,
+                focusNode: _mobileFocusNode,
+                hint: "+1 679-456-2987",
+                inputType: TextInputType.phone,
+              ),
+              SizedBox(
+                height: _height * 0.05,
+              ),
+              _buildTextFieldWidget(
+                title: "Password",
+                controller: _pwdController,
+                focusNode: _pwdFocusNode,
+                hint: "*********",
+                inputType: TextInputType.visiblePassword,
+                obscureText: true,
+              ),
+              SizedBox(
+                height: _height * 0.05,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: MaterialButton(
+                  height: 0,
+                  minWidth: 0,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: _width * 0.11,
+                    vertical: _height * 0.0245,
+                  ),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Pigment.fromString(CustomColors.black1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(_width),
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: Text(
+                    "Save Info",
+                    style: GoogleFonts.inter(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: _width * 0.041,
+                    ),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

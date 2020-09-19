@@ -188,10 +188,7 @@ class Routes {
 
   static Future<void> settingsScreen(BuildContext context) async {
     Widget screen = await _buildScreenAsync(
-      BlocProvider(
-        creator: (c, b) => SettingsBloc(),
-        child: SettingsScreen(),
-      ),
+      SettingsScreen(),
     );
 
     return Navigator.push(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -23,7 +25,7 @@ class _InviteScreenState extends State<InviteScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -37,7 +39,7 @@ class _InviteScreenState extends State<InviteScreen> {
                   padding: EdgeInsets.all(_width * 0.015),
                   child: Icon(
                     Icons.close,
-                    color: Colors.black,
+                    // color: Colors.black,
                     size: _width * 0.07,
                   ),
                 ),
@@ -57,109 +59,116 @@ class _InviteScreenState extends State<InviteScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: Container(
-        width: _width,
-        padding: EdgeInsets.symmetric(horizontal: _width * 0.08),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: _height * 0.005,
-            ),
-            Text(
-              "Invite Friends & earn up to \$20",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-                fontSize: _width * 0.052,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: Container(
+          width: _width,
+          padding: EdgeInsets.symmetric(horizontal: _width * 0.08),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: _height * 0.005,
               ),
-            ),
-            SizedBox(
-              height: _height * 0.07,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Expanded(
-                  child: Image.asset(
-                    "assets/images/invite_artwork_one.webp",
-                    height: _height * 0.3,
-                    alignment: Alignment.bottomLeft,
-                  ),
-                ),
-                Expanded(
-                  child: Image.asset(
-                    "assets/images/invite_artwork_two.webp",
-                    height: _height * 0.24,
-                    alignment: Alignment.bottomRight,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: _height * 0.05,
-            ),
-            Text(
-              "Earn up to \$20 for each friend you refer and reserves at least 10 pods in the first month",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                fontSize: _width * 0.039,
-              ),
-            ),
-            SizedBox(
-              height: _height * 0.15,
-            ),
-            RichText(
-              text: TextSpan(
-                text: "REFERRAL CODE: ",
+              Text(
+                "Invite Friends & earn up to \$20",
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w900,
-                  fontSize: _width * 0.038,
+                  fontSize: _width * 0.052,
                 ),
-                children: [
-                  TextSpan(
-                    text: "KTH738299",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: _width * 0.038,
+              ),
+              SizedBox(
+                height: _height * 0.07,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Expanded(
+                    child: Image.asset(
+                      "assets/images/invite_artwork_one.webp",
+                      height: _height * 0.3,
+                      alignment: Alignment.bottomLeft,
+                    ),
+                  ),
+                  Expanded(
+                    child: Image.asset(
+                      "assets/images/invite_artwork_two.webp",
+                      height: _height * 0.24,
+                      alignment: Alignment.bottomRight,
                     ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: _height * 0.04,
-            ),
-            MaterialButton(
-              height: 0,
-              minWidth: double.infinity,
-              padding: EdgeInsets.symmetric(
-                vertical: _height * 0.025,
+              SizedBox(
+                height: _height * 0.05,
               ),
-              color: Pigment.fromString(CustomColors.black1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(_width),
-              ),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Text(
-                "Share Code",
+              Text(
+                "Earn up to \$20 for each friend you refer and reserves at least 10 pods in the first month",
                 style: GoogleFonts.inter(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: _width * 0.042,
+                  // color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: _width * 0.039,
                 ),
               ),
-              onPressed: () async {
-                await Future.delayed(Duration(milliseconds: 150));
-              },
-            ),
-          ],
+              SizedBox(
+                height: _height * 0.15,
+              ),
+              RichText(
+                text: TextSpan(
+                  text: "REFERRAL CODE: ",
+                  style: GoogleFonts.inter(
+                    // color: Colors.black,
+                    fontWeight: FontWeight.w900,
+                    fontSize: _width * 0.038,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "KTH738299",
+                      style: GoogleFonts.inter(
+                        // color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: _width * 0.038,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: _height * 0.04,
+              ),
+              MaterialButton(
+                height: 0,
+                minWidth: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  vertical: _height * 0.025,
+                ),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(_width),
+                ),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                child: Text(
+                  "Share Code",
+                  style: GoogleFonts.inter(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: _width * 0.042,
+                  ),
+                ),
+                onPressed: () async {
+                  await Future.delayed(Duration(milliseconds: 150));
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

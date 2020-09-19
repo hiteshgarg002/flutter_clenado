@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/routes/routes.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -24,7 +26,7 @@ class _CodeScreenState extends State<CodeScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -38,7 +40,7 @@ class _CodeScreenState extends State<CodeScreen> {
                   padding: EdgeInsets.all(_width * 0.015),
                   child: Icon(
                     Icons.arrow_back,
-                    color: Colors.black,
+                    // color: Colors.black,
                     size: _width * 0.08,
                   ),
                 ),
@@ -60,7 +62,9 @@ class _CodeScreenState extends State<CodeScreen> {
           horizontal: _width * 0.075,
           vertical: _height * 0.025,
         ),
-        color: Pigment.fromString(CustomColors.black1),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Pigment.fromString(CustomColors.black1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -68,7 +72,9 @@ class _CodeScreenState extends State<CodeScreen> {
         child: Text(
           "Go to reservations",
           style: GoogleFonts.inter(
-            color: Colors.white,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Pigment.fromString(CustomColors.black1)
+                : Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: _width * 0.039,
           ),
@@ -97,7 +103,7 @@ class _CodeScreenState extends State<CodeScreen> {
                 "7",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w900,
                   fontSize: _width * 0.075,
                 ),
@@ -115,7 +121,7 @@ class _CodeScreenState extends State<CodeScreen> {
                 "2",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w900,
                   fontSize: _width * 0.075,
                 ),
@@ -133,7 +139,7 @@ class _CodeScreenState extends State<CodeScreen> {
                 "4",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w900,
                   fontSize: _width * 0.075,
                 ),
@@ -151,7 +157,7 @@ class _CodeScreenState extends State<CodeScreen> {
                 "1",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w900,
                   fontSize: _width * 0.075,
                 ),
@@ -166,54 +172,57 @@ class _CodeScreenState extends State<CodeScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: Container(
-        width: _width,
-        padding: EdgeInsets.symmetric(horizontal: _width * 0.07),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: _height * 0.005,
-            ),
-            Text(
-              "Thank you!\nYour pod has been reserved.",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-                fontSize: _width * 0.065,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: Container(
+          width: _width,
+          padding: EdgeInsets.symmetric(horizontal: _width * 0.07),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: _height * 0.005,
               ),
-            ),
-            SizedBox(
-              height: _height * 0.055,
-            ),
-            Image.asset(
-              "assets/images/success.webp",
-              width: _width * 0.29,
-              height: _width * 0.29,
-            ),
-            SizedBox(
-              height: _height * 0.09,
-            ),
-            Text(
-              "Code to unlock door #4",
-              style: GoogleFonts.inter(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                fontSize: _width * 0.04,
+              Text(
+                "Thank you!\nYour pod has been reserved.",
+                style: GoogleFonts.inter(
+                  // color: Colors.black,
+                  fontWeight: FontWeight.w900,
+                  fontSize: _width * 0.065,
+                ),
               ),
-            ),
-            SizedBox(
-              height: _height * 0.04,
-            ),
-            _buildUnlockCodeWidget,
-            SizedBox(
-              height: _height * 0.07,
-            ),
-            _buildGoToReservationsButtonWidget,
-          ],
+              SizedBox(
+                height: _height * 0.055,
+              ),
+              Image.asset(
+                "assets/images/success.webp",
+                width: _width * 0.29,
+                height: _width * 0.29,
+              ),
+              SizedBox(
+                height: _height * 0.09,
+              ),
+              Text(
+                "Code to unlock door #4",
+                style: GoogleFonts.inter(
+                  // color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: _width * 0.04,
+                ),
+              ),
+              SizedBox(
+                height: _height * 0.04,
+              ),
+              _buildUnlockCodeWidget,
+              SizedBox(
+                height: _height * 0.07,
+              ),
+              _buildGoToReservationsButtonWidget,
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:flutter_clenado/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -24,7 +26,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -42,7 +44,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -58,7 +60,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                   child: Text(
                     "Reservations",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -107,7 +109,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
           horizontal: _width * 0.052,
           vertical: _height * 0.0225,
         ),
-        color: Pigment.fromString(CustomColors.black1),
+        color: Theme.of(context).brightness == Brightness.light
+            ? Pigment.fromString(CustomColors.black1)
+            : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -115,7 +119,9 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
         child: Text(
           "Cancel Reservation",
           style: GoogleFonts.inter(
-            color: Colors.white,
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+                : Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: _width * 0.038,
           ),
@@ -126,7 +132,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
   Future<void> _showReservationDetailsSheet() async {
     return await showMaterialModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       enableDrag: true,
       isDismissible: false,
       bounce: true,
@@ -194,7 +200,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                     child: Text(
                       "Washignton DC",
                       style: GoogleFonts.inter(
-                        color: Colors.black,
+                        // color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: _width * 0.055,
                       ),
@@ -211,7 +217,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                           "1667 K Street NW, Washington DC 20006",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            color: Colors.black,
+                            // color: Colors.black,
                             fontWeight: FontWeight.w600,
                             fontSize: _width * 0.034,
                           ),
@@ -227,7 +233,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                               "2.5 miles away",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                color: Colors.black,
+                                // color: Colors.black,
                                 fontWeight: FontWeight.w400,
                                 fontSize: _width * 0.032,
                               ),
@@ -375,7 +381,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 Text(
                   "1667 K Street NW, Washington DC 20006",
                   style: GoogleFonts.inter(
-                    color: Colors.black,
+                    // color: Colors.black,
                     fontWeight: FontWeight.w600,
                     fontSize: _width * 0.036,
                   ),
@@ -410,31 +416,34 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: _height * 0.03,
-          ),
-          Expanded(
-            child: NotificationListener<OverscrollIndicatorNotification>(
-              onNotification: (overScroll) {
-                overScroll.disallowGlow();
-                return true;
-              },
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(
-                    horizontal: _width * 0.05, vertical: _height * 0.01),
-                itemCount: 5,
-                itemBuilder: (BuildContext context, int index) {
-                  return _buildListViewItemWidget();
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+          child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: Column(
+          children: <Widget>[
+            SizedBox(
+              height: _height * 0.03,
+            ),
+            Expanded(
+              child: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (overScroll) {
+                  overScroll.disallowGlow();
+                  return true;
                 },
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: _width * 0.05, vertical: _height * 0.01),
+                  itemCount: 5,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildListViewItemWidget();
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -3,13 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
 import 'package:flutter_clenado/routes/routes.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
-// import 'package:flutter_clenado/utils/shared_preferences_util.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:flutter_clenado/utils/social_signin_type_enum.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 import 'package:bloc_provider/bloc_provider.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -54,9 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
         focusNode: focusNode,
         keyboardType: inputType,
         cursorWidth: _width * 0.007,
-        cursorColor: Colors.black,
         style: GoogleFonts.inter(
-          color: Colors.black,
+          // color: Colors.black,
           fontWeight: FontWeight.w600,
           fontSize: _width * 0.038,
         ),
@@ -290,6 +288,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   builder: (context, snapshot) {
                     return Checkbox(
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      checkColor:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.black
+                              : Colors.white,
                       value: snapshot.data,
                       onChanged: (value) {
                         _bloc.setRememberMe = value;
@@ -299,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 "Remember me",
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w800,
                   fontSize: _width * 0.033,
                 ),
@@ -347,18 +349,11 @@ class _LoginScreenState extends State<LoginScreen> {
     _width = MediaQuery.of(context).size.width;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarDividerColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
+      value: ThemeUtils.getStatusNavBarTheme(context),
       child: Scaffold(
         key: _sfKey,
         resizeToAvoidBottomInset: true,
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         body: NotificationListener<OverscrollIndicatorNotification>(
           onNotification: (overScroll) {
             overScroll.disallowGlow();
@@ -377,7 +372,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text(
                   "LOGIN",
                   style: GoogleFonts.inter(
-                    color: Colors.black,
+                    // color: Colors.black,
                     fontWeight: FontWeight.w900,
                     fontSize: _width * 0.065,
                   ),

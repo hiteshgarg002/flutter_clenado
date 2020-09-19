@@ -39,6 +39,7 @@ class CustomColors {
 
   static const String black1 = "#121516";
   static const String black2 = "#1C1C1C";
+  static const String black3 = "#0a0a0a";
 }
 
 class ColorToMaterial {

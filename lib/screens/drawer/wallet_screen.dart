@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -23,7 +25,7 @@ class _WalletScreenState extends State<WalletScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -41,7 +43,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -57,7 +59,7 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: Text(
                     "Wallet",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -77,7 +79,9 @@ class _WalletScreenState extends State<WalletScreen> {
           horizontal: _width * 0.038,
           vertical: _height * 0.02,
         ),
-        color: Pigment.fromString(CustomColors.black1),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Pigment.fromString(CustomColors.black1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -85,7 +89,9 @@ class _WalletScreenState extends State<WalletScreen> {
         child: Text(
           "Add Payment Method",
           style: GoogleFonts.inter(
-            color: Colors.white,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Pigment.fromString(CustomColors.black1)
+                : Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: _width * 0.037,
           ),
@@ -100,7 +106,9 @@ class _WalletScreenState extends State<WalletScreen> {
           horizontal: _width * 0.06,
           vertical: _height * 0.016,
         ),
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Pigment.fromString(CustomColors.black1)
+            : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -112,13 +120,15 @@ class _WalletScreenState extends State<WalletScreen> {
           children: <Widget>[
             Icon(
               Icons.add,
-              color: Colors.black,
+              // color: Colors.black,
               size: _width * 0.052,
             ),
             Text(
               "Add Funds",
               style: GoogleFonts.inter(
-                color: Colors.black,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Pigment.fromString(CustomColors.black1),
                 fontWeight: FontWeight.bold,
                 fontSize: _width * 0.034,
               ),
@@ -131,7 +141,9 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget get _buildBalanceCardWidget => Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Pigment.fromString(CustomColors.black1),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Pigment.fromString(CustomColors.black1),
           borderRadius: BorderRadius.circular(_width * 0.03),
         ),
         padding: EdgeInsets.symmetric(
@@ -144,7 +156,9 @@ class _WalletScreenState extends State<WalletScreen> {
             Text(
               "Balance",
               style: GoogleFonts.inter(
-                color: Colors.white,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : Colors.white,
                 fontWeight: FontWeight.w600,
                 fontSize: _width * 0.043,
               ),
@@ -155,7 +169,9 @@ class _WalletScreenState extends State<WalletScreen> {
             Text(
               "Today Aug 27, 2020",
               style: GoogleFonts.inter(
-                color: Colors.white,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : Colors.white,
                 fontWeight: FontWeight.w500,
                 fontSize: _width * 0.03,
               ),
@@ -166,7 +182,9 @@ class _WalletScreenState extends State<WalletScreen> {
             Text(
               "\$150.00",
               style: GoogleFonts.inter(
-                color: Colors.white,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : Colors.white,
                 fontWeight: FontWeight.w900,
                 fontSize: _width * 0.13,
               ),
@@ -202,7 +220,8 @@ class _WalletScreenState extends State<WalletScreen> {
                 iconPath,
                 width: _width * 0.13,
                 height: _width * 0.13,
-                fit: BoxFit.cover,alignment: Alignment.centerLeft,
+                fit: BoxFit.cover,
+                alignment: Alignment.centerLeft,
               ),
               SizedBox(
                 width: _width * 0.02,
@@ -211,7 +230,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 child: Text(
                   "...$last4",
                   style: GoogleFonts.inter(
-                    color: Colors.black,
+                    // color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: _width * 0.037,
                   ),
@@ -236,54 +255,57 @@ class _WalletScreenState extends State<WalletScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overScroll) {
-          overScroll.disallowGlow();
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overScroll) {
+            overScroll.disallowGlow();
 
-          return true;
-        },
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: _width * 0.035,
-            vertical: _height * 0.01,
-          ),
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              _buildBalanceCardWidget,
-              SizedBox(
-                height: _height * 0.06,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: _width * 0.025),
-                child: Text(
-                  "Payment Method",
-                  style: GoogleFonts.inter(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: _width * 0.04,
+            return true;
+          },
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: _width * 0.035,
+              vertical: _height * 0.01,
+            ),
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildBalanceCardWidget,
+                SizedBox(
+                  height: _height * 0.06,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: _width * 0.025),
+                  child: Text(
+                    "Payment Method",
+                    style: GoogleFonts.inter(
+                      // color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: _width * 0.04,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: _height * 0.04,
-              ),
-              _buildPaymentMethodWidget("assets/images/visa.webp", "1234"),
-              _buildPaymentMethodWidget(
-                  "assets/images/master_card.webp", "1234"),
-              _buildPaymentMethodWidget("assets/images/amex.webp", "1234"),
-              SizedBox(
-                height: _height * 0.025,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: _width * 0.02),
-                child: _buildAddPaymentMethodButtonWidget,
-              ),
-            ],
+                SizedBox(
+                  height: _height * 0.04,
+                ),
+                _buildPaymentMethodWidget("assets/images/visa.webp", "1234"),
+                _buildPaymentMethodWidget(
+                    "assets/images/master_card.webp", "1234"),
+                _buildPaymentMethodWidget("assets/images/amex.webp", "1234"),
+                SizedBox(
+                  height: _height * 0.025,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: _width * 0.02),
+                  child: _buildAddPaymentMethodButtonWidget,
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -8,6 +8,7 @@ import 'package:flutter_clenado/blocs/drawer_bloc.dart';
 import 'package:flutter_clenado/routes/routes.dart';
 import 'package:flutter_clenado/utils/constants.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -159,7 +160,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
             horizontal: _width * 0.1,
           ),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(_width * 0.03),
               topLeft: Radius.circular(_width * 0.03),
@@ -173,7 +174,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 "Please enable location permission and try again!",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w600,
                   fontSize: _width * 0.04,
                 ),
@@ -182,12 +183,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 height: _height * 0.02,
               ),
               FlatButton(
-                color: Colors.black,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
                 splashColor: Colors.white.withOpacity(0.4),
                 child: Text(
                   "Go to App Settings",
                   style: GoogleFonts.inter(
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: _width * 0.038,
                   ),
@@ -276,6 +281,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   child: Icon(
                     Icons.menu,
                     size: _width * 0.07,
+                    color: Colors.black,
                   ),
                   onPressed: () async {
                     await Future.delayed(Duration(milliseconds: 100));
@@ -293,6 +299,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   child: Icon(
                     Icons.card_giftcard,
                     size: _width * 0.07,
+                    color: Colors.black,
                   ),
                   onPressed: () async {
                     await Future.delayed(Duration(milliseconds: 150));
@@ -323,7 +330,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               title,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.w900,
                 fontSize: smallSize ? _width * 0.046 : _width * 0.052,
               ),
@@ -371,125 +378,123 @@ class _DrawerScreenState extends State<DrawerScreen> {
         ),
       );
 
-  Widget get _buildDrawerWidget => Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: MediaQuery.of(context).padding.top * 1.3,
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: _width * 0.04),
-              child: MaterialButton(
-                height: 0,
-                minWidth: 0,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: CircleBorder(),
-                padding: EdgeInsets.all(_width * 0.015),
-                child: Icon(
-                  Icons.close,
-                  size: _width * 0.08,
-                ),
-                onPressed: () async {
-                  await Future.delayed(Duration(milliseconds: 150));
-                  Navigator.pop(context);
-                },
+  Widget get _buildDrawerWidget => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).padding.top * 1.3,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: _width * 0.04),
+            child: MaterialButton(
+              height: 0,
+              minWidth: 0,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(_width * 0.015),
+              child: Icon(
+                Icons.close,
+                size: _width * 0.08,
               ),
+              onPressed: () async {
+                await Future.delayed(Duration(milliseconds: 150));
+                Navigator.pop(context);
+              },
             ),
-            SizedBox(
-              height: _height * 0.04,
-            ),
-            Expanded(
-              child: NotificationListener<OverscrollIndicatorNotification>(
-                onNotification: (overScroll) {
-                  overScroll.disallowGlow();
-                  return true;
-                },
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _buildDrawerItemWidget(0, "Account"),
-                      _buildDrawerItemWidget(1, "Reservations"),
-                      _buildDrawerItemWidget(2, "Promotions"),
-                      _buildDrawerItemWidget(3, "History"),
-                      _buildDrawerItemWidget(4, "Wallet"),
-                      _buildDrawerItemWidget(5, "Rewards & points"),
-                      SizedBox(
-                        height: _height * 0.12,
+          ),
+          SizedBox(
+            height: _height * 0.04,
+          ),
+          Expanded(
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (overScroll) {
+                overScroll.disallowGlow();
+                return true;
+              },
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _buildDrawerItemWidget(0, "Account"),
+                    _buildDrawerItemWidget(1, "Reservations"),
+                    _buildDrawerItemWidget(2, "Promotions"),
+                    _buildDrawerItemWidget(3, "History"),
+                    _buildDrawerItemWidget(4, "Wallet"),
+                    _buildDrawerItemWidget(5, "Rewards & points"),
+                    SizedBox(
+                      height: _height * 0.12,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: _width * 0.07),
+                      child: Divider(
+                        height: 0,
+                        endIndent: 0,
+                        indent: 0,
+                        thickness: _height * 0.0014,
+                        color: Pigment.fromString(CustomColors.grey22),
                       ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: _width * 0.07),
-                        child: Divider(
-                          height: 0,
-                          endIndent: 0,
-                          indent: 0,
-                          thickness: _height * 0.0014,
-                          color: Pigment.fromString(CustomColors.grey22),
+                    ),
+                    SizedBox(
+                      height: _height * 0.04,
+                    ),
+                    _buildDrawerItemWidget(
+                      6,
+                      "Help",
+                      smallSize: true,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    _buildDrawerItemWidget(
+                      7,
+                      "Settings",
+                      smallSize: true,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(
+                      height: _height * 0.036,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: _width * 0.05),
+                      child: MaterialButton(
+                        height: 0,
+                        minWidth: 0,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _width * 0.1,
+                          vertical: _height * 0.022,
                         ),
-                      ),
-                      SizedBox(
-                        height: _height * 0.04,
-                      ),
-                      _buildDrawerItemWidget(
-                        6,
-                        "Help",
-                        smallSize: true,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      _buildDrawerItemWidget(
-                        7,
-                        "Settings",
-                        smallSize: true,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      SizedBox(
-                        height: _height * 0.036,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: _width * 0.05),
-                        child: MaterialButton(
-                          height: 0,
-                          minWidth: 0,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: _width * 0.1,
-                            vertical: _height * 0.022,
-                          ),
-                          color: Pigment.fromString(CustomColors.black1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(_width),
-                          ),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          child: Text(
-                            "Sign out",
-                            style: GoogleFonts.inter(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: _width * 0.035,
-                            ),
-                          ),
-                          onPressed: () async {
-                            await Future.delayed(Duration(milliseconds: 150));
-                            Routes.loginScreen(context);
-                          },
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Pigment.fromString(CustomColors.black1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(_width),
                         ),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        child: Text(
+                          "Sign out",
+                          style: GoogleFonts.inter(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.black
+                                    : Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: _width * 0.035,
+                          ),
+                        ),
+                        onPressed: () async {
+                          await Future.delayed(Duration(milliseconds: 150));
+                          Routes.loginScreen(context);
+                        },
                       ),
-                      SizedBox(
-                        height: _height * 0.02,
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: _height * 0.02,
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       );
 
   Widget get _buildMyLocationButtonWidget => MaterialButton(
@@ -503,6 +508,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
         child: Icon(
           Icons.my_location,
           size: _width * 0.07,
+          color: Colors.black,
         ),
         onPressed: () async {
           Position position = await _getCurrentLocation();
@@ -817,7 +823,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 "Select a Date",
                 textAlign: TextAlign.start,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.w600,
                   fontSize: _width * 0.04,
                 ),
@@ -889,7 +895,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   "Total charge: \$${snapshot.data}",
                   textAlign: TextAlign.start,
                   style: GoogleFonts.inter(
-                    color: Colors.black,
+                    // color: Colors.black,
                     fontWeight: FontWeight.w900,
                     fontSize: _width * 0.048,
                   ),
@@ -903,6 +909,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
       );
 
   Widget get _buildSlidingPanelWidget => SlidingUpPanel(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).scaffoldBackgroundColor
+            : Colors.white,
         controller: _panelController,
         defaultPanelState: PanelState.CLOSED,
         backdropEnabled: true,
@@ -953,7 +962,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     child: Text(
                       "Washignton DC",
                       style: GoogleFonts.inter(
-                        color: Colors.black,
+                        // color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: _width * 0.055,
                       ),
@@ -970,7 +979,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           "1667 K Street NW, Washington DC 20006",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            color: Colors.black,
+                            // color: Colors.black,
                             fontWeight: FontWeight.w600,
                             fontSize: _width * 0.034,
                           ),
@@ -986,7 +995,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                               "2.5 miles away",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                color: Colors.black,
+                                // color: Colors.black,
                                 fontWeight: FontWeight.w400,
                                 fontSize: _width * 0.032,
                               ),
@@ -1216,7 +1225,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               child: Text(
                 "Pods near you",
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  // color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: _width * 0.048,
                 ),
@@ -1330,7 +1339,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
         child: CircularProgressIndicator(
           strokeWidth: _width * 0.008,
           valueColor: AlwaysStoppedAnimation<Color>(
-            Colors.black,
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
         ),
       );
@@ -1343,18 +1354,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
     _width = MediaQuery.of(context).size.width;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarDividerColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
+      value: ThemeUtils.getStatusNavBarTheme(context),
       child: WillPopScope(
         child: Scaffold(
           key: _sfKey,
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           body: StreamBuilder<bool>(
               initialData: true,
               stream: _bloc.getLoading,

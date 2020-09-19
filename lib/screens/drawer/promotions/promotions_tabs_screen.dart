@@ -1,9 +1,11 @@
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/promotions_bloc.dart';
 import 'package:flutter_clenado/screens/drawer/promotions/promotions_screen.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
 import 'package:flutter_clenado/utils/promotions_enum.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 
@@ -44,7 +46,7 @@ class _PromotionsTabsScreenState extends State<PromotionsTabsScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -62,7 +64,7 @@ class _PromotionsTabsScreenState extends State<PromotionsTabsScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -78,7 +80,7 @@ class _PromotionsTabsScreenState extends State<PromotionsTabsScreen> {
                   child: Text(
                     "Promotions",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -148,48 +150,51 @@ class _PromotionsTabsScreenState extends State<PromotionsTabsScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: _width * 0.02,
-              vertical: _height * 0.015,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: _width * 0.02,
+                vertical: _height * 0.015,
+              ),
+              padding: EdgeInsets.all(_width * 0.008),
+              decoration: BoxDecoration(
+                color: Pigment.fromString(CustomColors.grey5),
+                borderRadius: BorderRadius.circular(_width),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: _buildTabWidget(0, "Current"),
+                  ),
+                  SizedBox(
+                    width: _width * 0.01,
+                  ),
+                  Expanded(
+                    child: _buildTabWidget(1, "Past"),
+                  ),
+                ],
+              ),
             ),
-            padding: EdgeInsets.all(_width * 0.008),
-            decoration: BoxDecoration(
-              color: Pigment.fromString(CustomColors.grey5),
-              borderRadius: BorderRadius.circular(_width),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                scrollDirection: Axis.horizontal,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _screensList.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    _screensList[index],
+              ),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: _buildTabWidget(0, "Current"),
-                ),
-                SizedBox(
-                  width: _width * 0.01,
-                ),
-                Expanded(
-                  child: _buildTabWidget(1, "Past"),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              scrollDirection: Axis.horizontal,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: _screensList.length,
-              itemBuilder: (BuildContext context, int index) =>
-                  _screensList[index],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

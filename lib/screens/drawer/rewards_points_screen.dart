@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pigment/pigment.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -23,7 +25,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
           height: AppBar().preferredSize.height +
               MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-          color: Colors.white,
+          // color: Colors.white,
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -41,7 +43,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
                         padding: EdgeInsets.all(_width * 0.015),
                         child: Icon(
                           Icons.arrow_back,
-                          color: Colors.black,
+                          // color: Colors.black,
                           size: _width * 0.08,
                         ),
                       ),
@@ -57,7 +59,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
                   child: Text(
                     "Rewards & Points",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
+                      // color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: _width * 0.047,
                     ),
@@ -95,7 +97,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
                       Text(
                         "1667 K Street NW",
                         style: GoogleFonts.inter(
-                          color: Colors.black,
+                          // color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: _width * 0.038,
                         ),
@@ -119,7 +121,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
             Text(
               "20",
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.w900,
                 fontSize: _width * 0.07,
               ),
@@ -138,7 +140,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
             Text(
               "650",
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: _width * 0.09,
               ),
@@ -146,7 +148,7 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
             Text(
               "of 1000 points",
               style: GoogleFonts.inter(
-                color: Colors.black,
+                // color: Colors.black,
                 fontWeight: FontWeight.w600,
                 fontSize: _width * 0.028,
               ),
@@ -167,105 +169,108 @@ class _RewardsPointsScreenState extends State<RewardsPointsScreen> {
     _height = MediaQuery.of(context).size.height;
     _width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppbarWidget,
-      body: Container(
-        width: _width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: _height * 0.03,
-            ),
-            _buildCircularProgressWidget,
-            SizedBox(
-              height: _height * 0.07,
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: _width * 0.055,
-                right: _width * 0.04,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: ThemeUtils.getStatusNavBarTheme(context),
+      child: Scaffold(
+        // backgroundColor: Colors.white,
+        appBar: _buildAppbarWidget,
+        body: Container(
+          width: _width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: _height * 0.03,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Recents",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w900,
-                      fontSize: _width * 0.06,
-                    ),
-                  ),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(_width * 0.02),
-                    child: Padding(
-                      padding: EdgeInsets.all(_width * 0.015),
-                      child: Text(
-                        "See all",
-                        style: GoogleFonts.inter(
-                          color: Pigment.fromString(CustomColors.grey10),
-                          fontWeight: FontWeight.bold,
-                          fontSize: _width * 0.037,
-                        ),
+              _buildCircularProgressWidget,
+              SizedBox(
+                height: _height * 0.07,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: _width * 0.055,
+                  right: _width * 0.04,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Recents",
+                      style: GoogleFonts.inter(
+                        // color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: _width * 0.06,
                       ),
                     ),
-                    onTap: () {},
-                  ),
-                ],
+                    InkWell(
+                      borderRadius: BorderRadius.circular(_width * 0.02),
+                      child: Padding(
+                        padding: EdgeInsets.all(_width * 0.015),
+                        child: Text(
+                          "See all",
+                          style: GoogleFonts.inter(
+                            color: Pigment.fromString(CustomColors.grey10),
+                            fontWeight: FontWeight.bold,
+                            fontSize: _width * 0.037,
+                          ),
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: _height * 0.035,
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: _width * 0.055),
-                child: Text(
-                  "August 2020",
-                  style: GoogleFonts.inter(
-                    color: Pigment.fromString(CustomColors.grey17),
-                    fontWeight: FontWeight.w500,
-                    fontSize: _width * 0.034,
+              SizedBox(
+                height: _height * 0.035,
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: _width * 0.055),
+                  child: Text(
+                    "August 2020",
+                    style: GoogleFonts.inter(
+                      color: Pigment.fromString(CustomColors.grey17),
+                      fontWeight: FontWeight.w500,
+                      fontSize: _width * 0.034,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: _height * 0.012,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: _width * 0.055),
-              child: Divider(
-                height: 0,
+              SizedBox(
+                height: _height * 0.012,
               ),
-            ),
-            SizedBox(
-              height: _height * 0.012,
-            ),
-            Expanded(
-              child: NotificationListener<OverscrollIndicatorNotification>(
-                onNotification: (overScroll) {
-                  overScroll.disallowGlow();
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: _width * 0.055),
+                child: Divider(
+                  height: 0,
+                ),
+              ),
+              SizedBox(
+                height: _height * 0.012,
+              ),
+              Expanded(
+                child: NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: (overScroll) {
+                    overScroll.disallowGlow();
 
-                  return true;
-                },
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: _width * 0.055,
-                    vertical: _height * 0.013,
-                  ),
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildRecentListItemWidget();
+                    return true;
                   },
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: _width * 0.055,
+                      vertical: _height * 0.013,
+                    ),
+                    itemCount: 5,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildRecentListItemWidget();
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
