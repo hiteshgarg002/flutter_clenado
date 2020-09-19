@@ -39,7 +39,7 @@ class _CodeScreenState extends State<CodeScreen> {
                   child: Icon(
                     Icons.arrow_back,
                     color: Colors.black,
-                    size: _width * 0.07,
+                    size: _width * 0.08,
                   ),
                 ),
                 onTap: () async {
@@ -57,8 +57,8 @@ class _CodeScreenState extends State<CodeScreen> {
         height: 0,
         minWidth: 0,
         padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.053,
-          vertical: _height * 0.02,
+          horizontal: _width * 0.075,
+          vertical: _height * 0.025,
         ),
         color: Pigment.fromString(CustomColors.black1),
         shape: RoundedRectangleBorder(
@@ -70,7 +70,7 @@ class _CodeScreenState extends State<CodeScreen> {
           style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: _width * 0.036,
+            fontSize: _width * 0.039,
           ),
         ),
         onPressed: () async {

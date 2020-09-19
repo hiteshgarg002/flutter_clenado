@@ -54,7 +54,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         child: Icon(
                           Icons.arrow_back,
                           color: Colors.black,
-                          size: _width * 0.07,
+                          size: _width * 0.08,
                         ),
                       ),
                       onTap: () async {
@@ -225,8 +225,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 height: 0,
                 minWidth: 0,
                 padding: EdgeInsets.symmetric(
-                  horizontal: _width * 0.085,
-                  vertical: _height * 0.02,
+                  horizontal: _width * 0.11,
+                  vertical: _height * 0.0245,
                 ),
                 color: Pigment.fromString(CustomColors.black1),
                 shape: RoundedRectangleBorder(
@@ -238,7 +238,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   style: GoogleFonts.inter(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: _width * 0.04,
+                    fontSize: _width * 0.041,
                   ),
                 ),
                 onPressed: () {},

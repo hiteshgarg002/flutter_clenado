@@ -63,7 +63,7 @@ class _PromotionsTabsScreenState extends State<PromotionsTabsScreen> {
                         child: Icon(
                           Icons.arrow_back,
                           color: Colors.black,
-                          size: _width * 0.07,
+                          size: _width * 0.08,
                         ),
                       ),
                       onTap: () async {

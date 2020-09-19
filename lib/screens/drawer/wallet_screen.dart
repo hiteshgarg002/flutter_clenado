@@ -42,7 +42,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         child: Icon(
                           Icons.arrow_back,
                           color: Colors.black,
-                          size: _width * 0.07,
+                          size: _width * 0.08,
                         ),
                       ),
                       onTap: () async {
@@ -74,8 +74,8 @@ class _WalletScreenState extends State<WalletScreen> {
         height: 0,
         minWidth: 0,
         padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.03,
-          vertical: _height * 0.018,
+          horizontal: _width * 0.038,
+          vertical: _height * 0.02,
         ),
         color: Pigment.fromString(CustomColors.black1),
         shape: RoundedRectangleBorder(
@@ -87,7 +87,7 @@ class _WalletScreenState extends State<WalletScreen> {
           style: GoogleFonts.inter(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: _width * 0.036,
+            fontSize: _width * 0.037,
           ),
         ),
         onPressed: () {},
@@ -98,7 +98,7 @@ class _WalletScreenState extends State<WalletScreen> {
         minWidth: 0,
         padding: EdgeInsets.symmetric(
           horizontal: _width * 0.06,
-          vertical: _height * 0.015,
+          vertical: _height * 0.016,
         ),
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -168,7 +168,7 @@ class _WalletScreenState extends State<WalletScreen> {
               style: GoogleFonts.inter(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
-                fontSize: _width * 0.115,
+                fontSize: _width * 0.13,
               ),
             ),
             SizedBox(
@@ -183,7 +183,7 @@ class _WalletScreenState extends State<WalletScreen> {
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(
-            horizontal: _width * 0.01,
+            horizontal: _width * 0.025,
             vertical: _height * 0.005,
           ),
           decoration: BoxDecoration(
@@ -202,7 +202,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 iconPath,
                 width: _width * 0.13,
                 height: _width * 0.13,
-                fit: BoxFit.cover,
+                fit: BoxFit.cover,alignment: Alignment.centerLeft,
               ),
               SizedBox(
                 width: _width * 0.02,
@@ -247,7 +247,7 @@ class _WalletScreenState extends State<WalletScreen> {
         },
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
-            horizontal: _width * 0.032,
+            horizontal: _width * 0.035,
             vertical: _height * 0.01,
           ),
           scrollDirection: Axis.vertical,
@@ -259,7 +259,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 height: _height * 0.06,
               ),
               Padding(
-                padding: EdgeInsets.only(left: _width * 0.02),
+                padding: EdgeInsets.only(left: _width * 0.025),
                 child: Text(
                   "Payment Method",
                   style: GoogleFonts.inter(

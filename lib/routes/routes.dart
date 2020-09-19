@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_clenado/blocs/reservations_bloc.dart';
 import 'package:flutter_clenado/blocs/history_bloc.dart';
 import 'package:flutter_clenado/blocs/rewards_points_bloc.dart';
 import 'package:flutter_clenado/blocs/wallet_bloc.dart';
+import 'package:flutter_clenado/blocs/settings_bloc.dart';
 import 'package:flutter_clenado/screens/auth/login_screen.dart';
 import 'package:flutter_clenado/screens/auth/signup_screen.dart';
 import 'package:flutter_clenado/screens/code_screen.dart';
@@ -17,141 +20,210 @@ import 'package:flutter_clenado/screens/drawer/reservations_screen.dart';
 import 'package:flutter_clenado/screens/drawer/history_screen.dart';
 import 'package:flutter_clenado/screens/drawer/rewards_points_screen.dart';
 import 'package:flutter_clenado/screens/drawer/wallet_screen.dart';
+import 'package:flutter_clenado/screens/drawer/settings_screen.dart';
 import 'package:flutter_clenado/screens/invite_screen.dart';
 import 'package:flutter_clenado/screens/drawer/help_screen.dart';
 import 'animated_page_route.dart';
 
 class Routes {
-  static void drawerScreen(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+  static Future<Widget> _buildScreenAsync(Widget screen) async {
+    return Future.microtask(() {
+      return screen;
+    });
+  }
+
+  static Future<void> drawerScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => DrawerBloc(),
+        child: DrawerScreen(),
+      ),
+    );
+
+    return Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => DrawerBloc(),
-          child: DrawerScreen(),
-        );
+        return screen;
       }),
       (route) => false,
     );
   }
 
-  static void loginScreen(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+  static Future<void> loginScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => AuthBloc(),
+        child: LoginScreen(),
+      ),
+    );
+
+    return Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => AuthBloc(),
-          child: LoginScreen(),
-        );
+        return screen;
       }),
       (route) => false,
     );
   }
 
-  static void signupScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> signupScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => AuthBloc(),
+        child: SignupScreen(),
+      ),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => AuthBloc(),
-          child: SignupScreen(),
-        );
+        return screen;
       }),
     );
   }
 
-  static void accountScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> accountScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      AccountScreen(),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return AccountScreen();
+        return screen;
       }),
     );
   }
 
-  static void reservationsScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> reservationsScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => ReservationsBloc(),
+        child: ReservationsScreen(),
+      ),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => ReservationsBloc(),
-          child: ReservationsScreen(),
-        );
+        return screen;
       }),
     );
   }
 
-  static void historyScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> historyScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => HistoryBloc(),
+        child: HistoryScreen(),
+      ),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => HistoryBloc(),
-          child: HistoryScreen(),
-        );
+        return screen;
       }),
     );
   }
 
-  static void rewardsPointsScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> rewardsPointsScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => RewardsPointsBloc(),
+        child: RewardsPointsScreen(),
+      ),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => RewardsPointsBloc(),
-          child: RewardsPointsScreen(),
-        );
+        return screen;
       }),
     );
   }
 
-  static void walletScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> walletScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => WalletBloc(),
+        child: WalletScreen(),
+      ),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => WalletBloc(),
-          child: WalletScreen(),
-        );
+        return screen;
       }),
     );
   }
 
-  static void promotionsTabsScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> promotionsTabsScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => PromotionsBloc(),
+        child: PromotionsTabsScreen(),
+      ),
+    );
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return BlocProvider(
-          creator: (c, b) => PromotionsBloc(),
-          child: PromotionsTabsScreen(),
-        );
+        return screen;
       }),
     );
   }
 
-  static void helpScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> helpScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(HelpScreen());
+
+    return Navigator.push(
       context,
       CupertinoPageRoute(builder: (BuildContext context) {
-        return HelpScreen();
+        return screen;
       }),
     );
   }
 
-  static void inviteScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> settingsScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      BlocProvider(
+        creator: (c, b) => SettingsBloc(),
+        child: SettingsScreen(),
+      ),
+    );
+
+    return Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (BuildContext context) {
+        return screen;
+      }),
+    );
+  }
+
+  static Future<void> inviteScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      InviteScreen(),
+    );
+
+    return Navigator.push(
       context,
       AnimatedPageRoute.sharedAxisPageRoute(
-        () => InviteScreen(),
+        () => screen,
       ),
     );
   }
 
-  static void codeScreen(BuildContext context) {
-    Navigator.push(
+  static Future<void> codeScreen(BuildContext context) async {
+    Widget screen = await _buildScreenAsync(
+      CodeScreen(),
+    );
+
+    return Navigator.push(
       context,
       AnimatedPageRoute.sharedAxisPageRoute(
-        () => CodeScreen(),
+        () => screen,
       ),
     );
   }

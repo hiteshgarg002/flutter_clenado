@@ -140,7 +140,7 @@ class _InviteScreenState extends State<InviteScreen> {
               height: 0,
               minWidth: double.infinity,
               padding: EdgeInsets.symmetric(
-                vertical: _height * 0.022,
+                vertical: _height * 0.025,
               ),
               color: Pigment.fromString(CustomColors.black1),
               shape: RoundedRectangleBorder(
@@ -152,7 +152,7 @@ class _InviteScreenState extends State<InviteScreen> {
                 style: GoogleFonts.inter(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: _width * 0.04,
+                  fontSize: _width * 0.042,
                 ),
               ),
               onPressed: () async {

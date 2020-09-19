@@ -33,6 +33,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: "Clenado",
       theme: ThemeData(
         // This is the theme of your application.
         //

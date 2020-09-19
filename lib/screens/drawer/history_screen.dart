@@ -42,7 +42,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         child: Icon(
                           Icons.arrow_back,
                           color: Colors.black,
-                          size: _width * 0.07,
+                          size: _width * 0.08,
                         ),
                       ),
                       onTap: () async {
@@ -103,10 +103,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: _width * 0.032,
-                        vertical: _height * 0.002,
+                        vertical: _height * 0.0035,
                       ),
                       decoration: BoxDecoration(
-                   color: Pigment.fromString(CustomColors.red1),
+                        color: Pigment.fromString(CustomColors.red1),
                         borderRadius: BorderRadius.circular(_width),
                       ),
                       child: Text(
@@ -114,7 +114,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         style: GoogleFonts.inter(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: _width * 0.033,
+                          fontSize: _width * 0.034,
                         ),
                       ),
                     )
@@ -142,8 +142,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       height: 0,
                       minWidth: 0,
                       padding: EdgeInsets.symmetric(
-                        horizontal: _width * 0.05,
-                        vertical: _height * 0.01,
+                        horizontal: _width * 0.058,
+                        vertical: _height * 0.014,
                       ),
                       color: Pigment.fromString(CustomColors.grey12),
                       shape: RoundedRectangleBorder(
@@ -160,10 +160,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                       onPressed: () {},
                     ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: _width * 0.07,
-                      color: Pigment.fromString(CustomColors.grey4),
+                    Image.asset(
+                      "assets/images/right_arrow.webp",
+                      width: _width * 0.07,
+                      height: _width * 0.07,
                     ),
                   ],
                 ),

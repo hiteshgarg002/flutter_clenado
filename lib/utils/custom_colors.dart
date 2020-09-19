@@ -7,6 +7,7 @@ class CustomColors {
   static const String red4 = "#EB0000";
   static const String red5 = "#C70000";
   static const String red6 = "#E60000";
+  static const String red7 = "#D10000";
 
   static const String grey1 = "#F5F5F5";
   static const String grey2 = "#6B6B6B";
@@ -27,6 +28,9 @@ class CustomColors {
   static const String grey17 = "#787878";
   static const String grey18 = "#DBDBDB";
   static const String grey19 = "#A4A2A4";
+  static const String grey20 = "#D6D6D6";
+  static const String grey21 = "#F3F3F3";
+  static const String grey22 = "#BABABA";
 
   static const String green1 = "#04EB00";
 
@@ -34,6 +38,7 @@ class CustomColors {
   static const String blue2 = "#003EB3";
 
   static const String black1 = "#121516";
+  static const String black2 = "#1C1C1C";
 }
 
 class ColorToMaterial {

@@ -315,8 +315,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
             color: Colors.transparent,
             width: double.infinity,
             padding: EdgeInsets.symmetric(
-              vertical: _height * 0.017,
-              horizontal: _width * 0.06,
+              vertical: _height * 0.0175,
+              horizontal: _width * 0.07,
             ),
             alignment: Alignment.centerLeft,
             child: Text(
@@ -325,7 +325,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               style: GoogleFonts.inter(
                 color: Colors.black,
                 fontWeight: FontWeight.w900,
-                fontSize: smallSize ? _width * 0.043 : _width * 0.05,
+                fontSize: smallSize ? _width * 0.046 : _width * 0.052,
               ),
             ),
           ),
@@ -362,6 +362,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
               case 6:
                 Routes.helpScreen(context);
                 break;
+
+              case 7:
+                Routes.settingsScreen(context);
+                break;
             }
           },
         ),
@@ -378,7 +382,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
               height: MediaQuery.of(context).padding.top * 1.3,
             ),
             Padding(
-              padding: EdgeInsets.only(left: _width * 0.03),
+              padding: EdgeInsets.only(left: _width * 0.04),
               child: MaterialButton(
                 height: 0,
                 minWidth: 0,
@@ -387,7 +391,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 padding: EdgeInsets.all(_width * 0.015),
                 child: Icon(
                   Icons.close,
-                  size: _width * 0.075,
+                  size: _width * 0.08,
                 ),
                 onPressed: () async {
                   await Future.delayed(Duration(milliseconds: 150));
@@ -420,13 +424,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: _width * 0.06),
+                            EdgeInsets.symmetric(horizontal: _width * 0.07),
                         child: Divider(
                           height: 0,
                           endIndent: 0,
                           indent: 0,
-                          thickness: _height * 0.0015,
-                          color: Colors.black,
+                          thickness: _height * 0.0014,
+                          color: Pigment.fromString(CustomColors.grey22),
                         ),
                       ),
                       SizedBox(
@@ -445,16 +449,16 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                       SizedBox(
-                        height: _height * 0.04,
+                        height: _height * 0.036,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: _width * 0.06),
+                        padding: EdgeInsets.only(left: _width * 0.05),
                         child: MaterialButton(
                           height: 0,
                           minWidth: 0,
                           padding: EdgeInsets.symmetric(
-                            horizontal: _width * 0.06,
-                            vertical: _height * 0.015,
+                            horizontal: _width * 0.1,
+                            vertical: _height * 0.022,
                           ),
                           color: Pigment.fromString(CustomColors.black1),
                           shape: RoundedRectangleBorder(
@@ -572,7 +576,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
         height: 0,
         minWidth: _width * 0.78,
         padding: EdgeInsets.symmetric(
-          vertical: _height * 0.024,
+          vertical: _height * 0.025,
         ),
         color: Pigment.fromString(CustomColors.red1),
         shape: RoundedRectangleBorder(
@@ -599,8 +603,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
         height: 0,
         minWidth: 0,
         padding: EdgeInsets.symmetric(
-          horizontal: _width * 0.05,
-          vertical: _height * 0.018,
+          horizontal: _width * 0.095,
+          vertical: _height * 0.0225,
         ),
         color: Pigment.fromString(CustomColors.red1),
         shape: RoundedRectangleBorder(
@@ -611,8 +615,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
           "Reserve Now",
           style: GoogleFonts.inter(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: _width * 0.034,
+            fontWeight: FontWeight.w900,
+            fontSize: _width * 0.037,
           ),
         ),
         onPressed: () async {
@@ -1056,7 +1060,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           horizontal: _width * 0.045,
           vertical: _height * 0.018,
         ),
-        color: Pigment.fromString(CustomColors.red1),
+        color: Pigment.fromString(CustomColors.red7),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(_width),
         ),
@@ -1118,10 +1122,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       ),
                     ),
                     Container(
+                      height: _height * 0.09,
                       padding: EdgeInsets.symmetric(
                         horizontal: _width * 0.04,
-                        vertical: _height * 0.015,
+                        // vertical: _height * 0.015,
                       ),
+                      alignment: Alignment.centerLeft,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
@@ -1141,6 +1147,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     fontSize: _width * 0.042,
                                   ),
                                 ),
+                                SizedBox(height: _height * 0.002),
                                 Text(
                                   "1667 K Street NW",
                                   maxLines: 2,
@@ -1152,6 +1159,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     fontSize: _width * 0.03,
                                   ),
                                 ),
+                                SizedBox(height: _height * 0.002),
                                 Text(
                                   "1.9 miles",
                                   style: GoogleFonts.inter(
