@@ -1,4 +1,5 @@
 import 'package:bloc_provider/bloc_provider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/auth_bloc.dart';
@@ -13,6 +14,8 @@ SharedPreferences _preferences;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  GestureBinding.instance.resamplingEnabled = true;
 
   // setting app orientation to portrait
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
