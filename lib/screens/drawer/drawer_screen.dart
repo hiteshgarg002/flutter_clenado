@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_clenado/blocs/drawer_bloc.dart';
+import 'package:flutter_clenado/blocs/settings_bloc.dart';
 import 'package:flutter_clenado/routes/routes.dart';
 import 'package:flutter_clenado/utils/constants.dart';
 import 'package:flutter_clenado/utils/custom_colors.dart';
+import 'package:flutter_clenado/utils/shared_preferences_util.dart';
 import 'package:flutter_clenado/utils/theme_utils.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pigment/pigment.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -36,7 +39,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   final PanelController _panelController = PanelController();
   final ScrollController _scrollController = ScrollController();
 
-  String _mapStyle;
+  String _mapStyleLight, _mapStyleDark;
 
   //  Object for PolylinePoints
   PolylinePoints _polylinePoints;
@@ -50,6 +53,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
   DateTime _from, _to;
   int _hours;
 
+  SharedPreferences _preferences;
+
+  SettingsBloc _settingsBloc;
   DrawerBloc _bloc;
 
   @override
@@ -57,6 +63,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
     super.initState();
 
     _bloc = BlocProvider.of<DrawerBloc>(context);
+    _settingsBloc = BlocProvider.of<SettingsBloc>(context);
 
     _pageController = PageController(
       initialPage: 0,
@@ -65,10 +72,39 @@ class _DrawerScreenState extends State<DrawerScreen> {
     );
 
     _setPodsMarkers();
+    _setThemeModeListener();
   }
 
-  Future<void> _getMapStyle() async {
-    _mapStyle = await rootBundle.loadString('assets/maps_style/maps_style.txt');
+  void _setThemeModeListener() {
+    _settingsBloc.darkMode.listen((isDarkMode) {
+      if (isDarkMode != null && _mapController != null) {
+        if (isDarkMode) {
+          if (_mapStyleDark != null) {
+            _mapController.setMapStyle(_mapStyleDark);
+          }
+        } else {
+          if (_mapStyleLight != null) {
+            _mapController.setMapStyle(_mapStyleLight);
+          }
+        }
+      }
+    });
+  }
+
+  Future<void> _setupSharedPreferences() async {
+    _preferences = await SharedPreferencesUtil.getSharedPreferences();
+  }
+
+  Future<void> _getMapStyles() async {
+    _mapStyleLight = await rootBundle.loadString(
+      'assets/maps_style/maps_style_light.txt',
+      cache: true,
+    );
+
+    _mapStyleDark = await rootBundle.loadString(
+      'assets/maps_style/maps_style_dark.txt',
+      cache: true,
+    );
   }
 
   Future<void> _getMarkerIcon() async {
@@ -79,8 +115,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Future<void> _setPodsMarkers() async {
-    await _getMapStyle();
+    await _setupSharedPreferences();
+
+    await _getMapStyles();
     await _getMarkerIcon();
+
     _markersList = Set();
 
     _markersList.add(
@@ -1252,52 +1291,63 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Widget get _buildGoogleMapsWidget => StreamBuilder<bool>(
-      initialData: false,
-      stream: _bloc.getIsMapReady,
-      builder: (context, snapshot) {
-        return Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            AnimatedOpacity(
-              duration: Duration(seconds: 1),
-              opacity: snapshot.data ? 1.0 : 0.0,
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(22.7533, 75.8937),
-                  zoom: 12.5,
+        initialData: false,
+        stream: _bloc.getIsMapReady,
+        builder: (context, snapshot) {
+          return Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              AnimatedOpacity(
+                duration: Duration(seconds: 1),
+                opacity: snapshot.data ? 1.0 : 0.0,
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(22.7533, 75.8937),
+                    zoom: 12.5,
+                  ),
+                  // polylines: Set<Polyline>.of(_polylines.values),
+                  markers: _markersList,
+                  buildingsEnabled: true,
+                  compassEnabled: false,
+                  zoomGesturesEnabled: true,
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  tiltGesturesEnabled: true,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: false,
+                  zoomControlsEnabled: false,
+                  indoorViewEnabled: true,
+                  mapToolbarEnabled: false,
+                  onCameraMove: (CameraPosition position) {},
+                  onMapCreated: (controller) {
+                    bool isDarkMode =
+                        _preferences.getBool("darkMode") != null &&
+                            _preferences.getBool("darkMode");
+
+                    if (isDarkMode) {
+                      controller.setMapStyle(_mapStyleDark);
+                    } else {
+                      controller.setMapStyle(_mapStyleLight);
+                    }
+
+                    this._mapController = controller;
+
+                    Future.delayed(
+                      Duration(milliseconds: 500),
+                      () => _bloc.setIsMapReady = true,
+                    );
+                  },
+                  padding: EdgeInsets.zero,
                 ),
-                // polylines: Set<Polyline>.of(_polylines.values),
-                markers: _markersList,
-                buildingsEnabled: true,
-                compassEnabled: false,
-                zoomGesturesEnabled: true,
-                rotateGesturesEnabled: true,
-                scrollGesturesEnabled: true,
-                tiltGesturesEnabled: true,
-                myLocationEnabled: true,
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                indoorViewEnabled: true,
-                mapToolbarEnabled: false,
-                onCameraMove: (CameraPosition position) {},
-                onMapCreated: (controller) {
-                  controller.setMapStyle(_mapStyle);
-                  this._mapController = controller;
-                  Future.delayed(
-                    Duration(milliseconds: 500),
-                    () => _bloc.setIsMapReady = true,
-                  );
-                },
-                padding: EdgeInsets.zero,
               ),
-            ),
-            if (snapshot.data)
-              SizedBox.shrink()
-            else
-              _buildCircularProgressWidget,
-          ],
-        );
-      });
+              if (snapshot.data)
+                SizedBox.shrink()
+              else
+                _buildCircularProgressWidget,
+            ],
+          );
+        },
+      );
 
   Widget get _buildContentWidget => Stack(
         alignment: Alignment.center,

@@ -33,6 +33,8 @@ class SettingsBloc extends Bloc {
   set setNavigationType(int data) => _setNavigationType.add(data);
   set setLoading(bool data) => _setLoading.add(data);
 
+  BehaviorSubject<bool> get darkMode => this._darkMode;
+
   @override
   void dispose() {
     _enableNotifications.close();
