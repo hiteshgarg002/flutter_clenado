@@ -125,7 +125,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
     _markersList.add(
       Marker(
         markerId: MarkerId("1"),
-        position: LatLng(22.7533, 75.8937),
+        position: LatLng(37.139737111152684, -95.69707129150629),
         icon: _bitmapDescriptor,
         onTap: () async {
           _panelController.open();
@@ -136,7 +136,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
     _markersList.add(
       Marker(
         markerId: MarkerId("1"),
-        position: LatLng(22.7244, 75.8839),
+        position: LatLng(37.21747551232318, -95.60668721795082),
         icon: _bitmapDescriptor,
         onTap: () async {
           _panelController.open();
@@ -1302,8 +1302,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                 opacity: snapshot.data ? 1.0 : 0.0,
                 child: GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(22.7533, 75.8937),
-                    zoom: 12.5,
+                    target: LatLng(37.0902, -95.7129),
+                    zoom: 10,
                   ),
                   // polylines: Set<Polyline>.of(_polylines.values),
                   markers: _markersList,
@@ -1318,7 +1318,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   zoomControlsEnabled: false,
                   indoorViewEnabled: true,
                   mapToolbarEnabled: false,
-                  onCameraMove: (CameraPosition position) {},
+                  onCameraMove: (CameraPosition position) {
+                    print(
+                        "${position.target.latitude} || ${position.target.longitude}");
+                  },
                   onMapCreated: (controller) {
                     bool isDarkMode =
                         _preferences.getBool("darkMode") != null &&
