@@ -120,7 +120,7 @@ class _PromotionsScreenState extends State<PromotionsScreen> {
                                 progressColor:
                                     Pigment.fromString(CustomColors.red6),
                                 currentValue: 50,
-                                borderRadius: _width,
+                                borderRadius: BorderRadius.circular(_width),
                                 backgroundColor: Colors.black.withOpacity(0.1),
                                 maxValue: 100,
                                 size: double.infinity,

@@ -16,6 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pigment/pigment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -251,24 +252,24 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   Future<bool> _isPermissionGranted() async {
-    LocationPermission permission = await checkPermission();
+    PermissionStatus status = await Permission.location.status;
 
-    if (permission == LocationPermission.deniedForever) {
+    if (status == PermissionStatus.permanentlyDenied) {
       // show dialog for navigating to app settings
       _showAppSettingsDialog();
 
       return false;
     }
 
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
+    if (status == PermissionStatus.granted ||
+        status == PermissionStatus.limited) {
       return true;
     }
 
-    LocationPermission requestedPermission = await requestPermission();
+    PermissionStatus permissionStatus = await Permission.location.request();
 
-    if (requestedPermission == LocationPermission.denied ||
-        requestedPermission == LocationPermission.deniedForever) {
+    if (permissionStatus == PermissionStatus.denied ||
+        permissionStatus == PermissionStatus.permanentlyDenied) {
       return false;
     } else {
       return true;
@@ -283,7 +284,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
         return null;
       }
 
-      Position position = await getCurrentPosition(
+      Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation,
       );
 

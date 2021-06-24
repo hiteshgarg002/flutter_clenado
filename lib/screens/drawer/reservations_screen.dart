@@ -136,7 +136,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
       enableDrag: true,
       isDismissible: false,
       bounce: true,
-      builder: (BuildContext context, ScrollController controller) {
+      builder: (BuildContext context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

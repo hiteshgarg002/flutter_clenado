@@ -106,7 +106,7 @@ class _HelpScreenState extends State<HelpScreen> {
               ),
             ),
           ),
-          expanded: Container(),
+          expanded: Container(), collapsed: Container(),
         ),
       );
 
